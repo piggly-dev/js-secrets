@@ -20,6 +20,13 @@ export type GenerateMnemonicSeedOptions = Partial<{
 	password: string;
 }>;
 
+export type AvailableKeyPairAlgorithm = 'ed25519';
+
+export type GenerateKeyPairOptions = Partial<{
+	mnemonic: GenerateMnemonicOptions;
+	seed: GenerateMnemonicSeedOptions;
+}>;
+
 export type AvailableHashingAlgorithm =
 	| 'sha256'
 	| 'sha512'
@@ -29,17 +36,21 @@ export type AvailableHashingAlgorithm =
 
 export type AvailableKDF = 'pbkdf2' | 'bcrypt' | 'scrypt';
 
-export type GenerateKeyWithPBKDF2Options = Partial<{
+export type GenerateSecretOptions = Partial<{
+	seed: GenerateMnemonicSeedOptions;
+}>;
+
+export type GenerateKDFWithPBKDF2Options = Partial<{
 	iterations: number;
 	key_length: number;
 	salt_length: number;
 }>;
 
-export type GenerateKeyWithBcryptOptions = Partial<{
+export type GenerateKDFWithBcryptOptions = Partial<{
 	salt_length: number;
 }>;
 
-export type GenerateKeyWithScryptOptions = Partial<{
+export type GenerateKDFWithScryptOptions = Partial<{
 	cost: number;
 	block_size: number;
 	parallelization: number;
@@ -48,3 +59,10 @@ export type GenerateKeyWithScryptOptions = Partial<{
 }>;
 
 export type VersionedKey = { file: string; name: string; version: number };
+
+export type VersionedKeyPair = {
+	sk: string;
+	pk: string;
+	name: string;
+	version: number;
+};

@@ -1,7 +1,7 @@
 {
 	"compilerOptions": {
 		"target": "esnext",
-		"module": "CommonJS",
+		"module": "esnext",
 		"strict": true,
 		"declaration": true,
 		"noUnusedLocals": true,
@@ -31,8 +31,12 @@
 		"typeRoots": ["<rootDir>/src/types", "node_modules/@types"],
 		"types": ["node", "jest"]
 	},
-	"include": ["./src/**/*", "./debug/**/*", "./test/**/*"],
+	"include": ["./src/**/*", "./debug/**/*", "./test/**/*", "tmp/core/kdfs", "tmp/commands/kdfs"],
 	"exclude": ["./node_modules/**/*", "./build/**/*"],
+	"ts-node": {
+		"require": ["tsconfig-paths/register"],
+		"files": true
+	},
 	"tsc-alias": {
 		"resolveFullPaths": true
 	}

@@ -57,7 +57,7 @@
 		],
 		"react/jsx-filename-extension": "off",
 		"import/extensions": "off",
-		"max-statements": ["error", 15],
+		"max-statements": ["error", 25],
 		"prettier/prettier": "error",
 		"@typescript-eslint/no-explicit-any": "off",
 		"no-console": "off",

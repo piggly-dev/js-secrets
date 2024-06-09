@@ -10,6 +10,8 @@
 /debug
 /coverage
 /logs
+/keys
+/tmp
 
 ### Linux ###
 *~
