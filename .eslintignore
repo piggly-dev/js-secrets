@@ -5,6 +5,9 @@
 /debug
 /.jest
 /tmp
+/dist
 
 *.config.js
+*.config.cjs
 *.config.json
+fixME.cjs

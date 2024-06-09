@@ -1,11 +1,7 @@
-import { createRequire } from 'module';
-import crypto from 'crypto';
+import * as elliptic from 'elliptic';
 
-const require = createRequire(import.meta.url);
-
-const EdDSA = require('elliptic').eddsa;
-
-const ed = new EdDSA('ed25519');
+// eslint-disable-next-line new-cap
+const ed = new (elliptic as any).default.eddsa('ed25519');
 
 export function generateKeyPair(seed: Buffer): { sk: Buffer; pk: Buffer } {
 	const keys = ed.keyFromSecret(seed);
@@ -34,8 +30,4 @@ export async function verify(
 	publicKey: Buffer
 ): Promise<boolean> {
 	return ed.verify(message, signature, publicKey);
-}
-
-export function hash(algorithm: string, message: string) {
-	return crypto.hash(algorithm, message, 'buffer');
 }

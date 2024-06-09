@@ -6,23 +6,21 @@ module.exports = {
 	collectCoverage: true,
 	coverageThreshold: {
 		global: {
-			branches: 30,
-			functions: 50,
+			branches: 60,
+			functions: 60,
 			lines: 60,
 			statements: 60,
 		},
 	},
-	coveragePathIgnorePatterns: [
-		'./node_modules/',
-		'./test/',
-		'./debug',
-		'./build',
-	],
+	collectCoverageFrom: ['<rootDir>/src/**/*.{ts}'],
+	coveragePathIgnorePatterns: ['./node_modules/', './tests/', './debug', './build'],
 	coverageReporters: ['json-summary', 'text', 'lcov'],
 	transform: {
-		'^.+\\.ts?$': [
+		// '^.+\\.(js|jsx|mjs)$': 'babel-jest',
+		'^.+\\.(mt|t|cj|j)s$': [
 			'ts-jest',
 			{
+				useESM: true,
 				diagnostics: false,
 				tsconfig: 'tsconfig.json',
 			},
@@ -31,8 +29,10 @@ module.exports = {
 	preset: 'ts-jest',
 	moduleFileExtensions: ['ts', 'js'],
 	moduleNameMapper: {
+		'@/(.*)\\.js': '<rootDir>/src/$1',
+		'#/(.*)\\.js': '<rootDir>/tests/$1',
 		'@/(.*)': '<rootDir>/src/$1',
-		'@test/(.*)': '<rootDir>/test/$1',
+		'#/(.*)': '<rootDir>/tests/$1',
 	},
 	moduleDirectories: ['node_modules', '<rootDir>/src'],
 	extensionsToTreatAsEsm: ['.ts'],

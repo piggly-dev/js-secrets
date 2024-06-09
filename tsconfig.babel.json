@@ -4,6 +4,7 @@
 		"module": "esnext",
 		"strict": true,
 		"declaration": true,
+		"emitDeclarationOnly": true,
 		"noEmit": true,
 		"noUnusedLocals": true,
 		"noUnusedParameters": false,
@@ -16,11 +17,10 @@
 		"allowJs": false,
 		"resolveJsonModule": true,
 		"baseUrl": ".",
-		"rootDir": ".",
+		"rootDir": "./src",
 		"outDir": "./dist/esm",
 		"paths": {
-			"@/*": ["src/*"],
-			"@test/*": ["test/*"]
+			"@/*": ["src/*"]
 		},
 		"plugins": [
 			{
@@ -30,14 +30,10 @@
 		],
 		"lib": ["esnext"],
 		"typeRoots": ["<rootDir>/src/types", "node_modules/@types"],
-		"types": ["node", "jest"]
+		"types": ["node"]
 	},
-	"include": ["./src/**/*", "./debug/**/*", "./test/**/*"],
-	"exclude": ["./node_modules/**/*", "./build/**/*"],
-	"ts-node": {
-		"require": ["tsconfig-paths/register"],
-		"files": true
-	},
+	"include": ["./src/**/*"],
+	"exclude": ["./node_modules/**/*", "./build/**/*", "./test/**/*"],
 	"tsc-alias": {
 		"resolveFullPaths": true
 	}

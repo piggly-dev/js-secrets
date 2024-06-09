@@ -1,6 +1,7 @@
 import { wordlists, mnemonicToSeed, generateMnemonic } from 'bip39';
 import { fileURLToPath } from 'url';
 import slugify from 'slugify';
+import crypto from 'crypto';
 import path from 'path';
 
 import { GenerateMnemonicOptions, GenerateMnemonicSeedOptions } from '@/types';
@@ -28,6 +29,10 @@ export async function seed(
 	options: GenerateMnemonicSeedOptions = {}
 ): Promise<Buffer> {
 	return mnemonicToSeed(mnemonic, options.password);
+}
+
+export function hash(algorithm: string, message: string) {
+	return crypto.hash(algorithm, message, 'buffer');
 }
 
 export function cutBuffer(buffer: Buffer, length: number): Buffer {
@@ -72,6 +77,8 @@ export function parseAbspath(abspath?: string): string {
 		throw new Error('Path is required and must be absolute.');
 	}
 
-	const __dirname = path.dirname(fileURLToPath(import.meta.url));
-	return abspath ?? path.join(__dirname, '..', '..', 'keys');
+	return (
+		abspath ??
+		path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..', 'keys')
+	);
 }

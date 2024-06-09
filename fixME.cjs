@@ -3,7 +3,7 @@ const path = require('path');
 
 const buildDir = path.resolve(__dirname, './dist');
 
-function createEsmModulePackageJson() {
+function fixME() {
 	fs.readdir(buildDir, function (err, dirs) {
 		if (err) {
 			throw err;
@@ -23,8 +23,23 @@ function createEsmModulePackageJson() {
 					);
 				}
 			}
+
+			if (dir === 'cjs') {
+				var packageJsonFile = path.join(buildDir, dir, '/package.json');
+				if (!fs.existsSync(packageJsonFile)) {
+					fs.writeFile(
+						packageJsonFile,
+						new Uint8Array(Buffer.from('{"type": "commonjs"}')),
+						function (err) {
+							if (err) {
+								throw err;
+							}
+						}
+					);
+				}
+			}
 		});
 	});
 }
 
-createEsmModulePackageJson();
+fixME();
