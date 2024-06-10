@@ -51,7 +51,7 @@ describe('core -> services -> KeyPairManagerService', () => {
 			expect(fs.readFileSync).toHaveBeenCalledWith(
 				path.join(mockPath, `${mockName}.pk.key`)
 			);
-			expect(keyPairManager.raw.get(mockName)?.get(0)).toEqual({
+			expect(keyPairManager.raw.get(mockName)?.get(1)).toEqual({
 				sk: mockSecretKey,
 				pk: mockPublicKey,
 			});

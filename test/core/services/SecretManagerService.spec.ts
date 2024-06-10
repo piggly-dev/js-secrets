@@ -38,7 +38,7 @@ describe('core -> services -> SecretManagerService', () => {
 			expect(fs.readFileSync).toHaveBeenCalledWith(
 				path.join(mockPath, `${mockName}.secret.key`)
 			);
-			expect(secretManager.raw.get(mockName)?.get(0)).toEqual(mockSecret);
+			expect(secretManager.raw.get(mockName)?.get(1)).toEqual(mockSecret);
 		});
 
 		it('should load secrets with an index', async () => {

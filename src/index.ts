@@ -58,3 +58,14 @@ export const utils = {
 	bufferToString,
 	stringToBuffer,
 };
+
+export type {
+	AvailableMnemonicLanguage,
+	GenerateMnemonicOptions,
+	GenerateMnemonicSeedOptions,
+	AvailableKeyPairAlgorithm,
+	GenerateKeyPairOptions,
+	GenerateSecretOptions,
+	VersionedKey,
+	VersionedKeyPair,
+} from '@/types';

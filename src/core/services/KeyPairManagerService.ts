@@ -7,11 +7,14 @@ import { readAll } from '@/utils/indexes';
 export class KeyPairManagerService {
 	private _keypairs: Map<string, Map<number, { sk: Buffer; pk: Buffer }>>;
 
+	private _current_version: number;
+
 	private _path: string;
 
-	constructor(abspath: string) {
+	constructor(abspath: string, current_version?: number) {
 		this._keypairs = new Map();
 		this._path = abspath;
+		this._current_version = current_version ?? 1;
 	}
 
 	public get raw(): Map<string, Map<number, { sk: Buffer; pk: Buffer }>> {
@@ -46,7 +49,7 @@ export class KeyPairManagerService {
 		const sk = fs.readFileSync(path.join(this._path, `${name}.sk.key`));
 		const pk = fs.readFileSync(path.join(this._path, `${name}.pk.key`));
 
-		keypairs.set(0, { sk, pk });
+		keypairs.set(1, { sk, pk });
 		this._keypairs.set(name, keypairs);
 		return true;
 	}
@@ -63,15 +66,12 @@ export class KeyPairManagerService {
 			number,
 			{ sk: Buffer; pk: Buffer }
 		>;
+		const v = version ?? this._current_version;
 
-		if (version) {
-			if (keypair.has(version) === false) {
-				throw Error(`Key-pair ${name} version ${version} not found.`);
-			}
-
-			return keypair.get(version) as { sk: Buffer; pk: Buffer };
+		if (keypair.has(v) === false) {
+			throw Error(`Key-pair ${name} version ${v} not found.`);
 		}
 
-		return keypair.get(0) as { sk: Buffer; pk: Buffer };
+		return keypair.get(v) as { sk: Buffer; pk: Buffer };
 	}
 }
