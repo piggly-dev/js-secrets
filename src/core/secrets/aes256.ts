@@ -2,7 +2,7 @@ import { Transform, TransformCallback } from 'stream';
 import crypto from 'crypto';
 
 export function generateSecret(seed: Buffer): Buffer {
-	return crypto.createHash('sha256').update(seed.subarray(0, 32)).digest();
+	return crypto.createHash('sha256').update(seed).digest();
 }
 
 export function concatSecrets(secrets: Array<Buffer>): Buffer {
@@ -14,12 +14,12 @@ export function concatSecrets(secrets: Array<Buffer>): Buffer {
 }
 
 export function prepareSecret(secret: Buffer, keys: Array<Buffer> = []) {
-	if (secret.length !== 32) {
-		throw Error('Secret must be 32 bytes long.');
+	if (secret.length < 32) {
+		throw Error('Secret must be at least 32 bytes long.');
 	}
 
-	if (keys.length > 0 && keys.some(key => key.length !== 32)) {
-		throw Error('Keys must be 32 bytes long.');
+	if (keys.length > 0 && keys.some(key => key.length < 32)) {
+		throw Error('Keys must be at least 32 bytes long.');
 	}
 
 	return concatSecrets([secret, ...keys]);
@@ -49,6 +49,7 @@ export function encrypt(
 
 export function encryptStream(secret: Buffer, keys: Array<Buffer> = []): Transform {
 	const { iv, cipher } = prepareEncryption(secret, keys);
+	let ivPushed = false;
 
 	const transform = new Transform({
 		transform(
@@ -57,11 +58,16 @@ export function encryptStream(secret: Buffer, keys: Array<Buffer> = []): Transfo
 			encoding: BufferEncoding,
 			callback: TransformCallback
 		): void {
-			this.push(iv);
-			this._transform = cipher._transform.bind(cipher);
-			this._flush = cipher._flush.bind(cipher);
-
-			cipher._transform(chunk, encoding, callback);
+			if (!ivPushed) {
+				this.push(iv);
+				ivPushed = true;
+			}
+			this.push(cipher.update(chunk));
+			callback();
+		},
+		flush(callback) {
+			this.push(cipher.final());
+			callback();
 		},
 	});
 
@@ -73,12 +79,12 @@ export function decrypt(
 	message: Buffer,
 	keys: Array<Buffer> = []
 ): Buffer {
-	if (secret.length !== 32) {
-		throw Error('Secret must be 32 bytes long.');
+	if (secret.length < 32) {
+		throw Error('Secret must be at least 32 bytes long.');
 	}
 
-	if (keys.length > 0 && keys.some(key => key.length !== 32)) {
-		throw Error('Keys must be 32 bytes long.');
+	if (keys.length > 0 && keys.some(key => key.length < 32)) {
+		throw Error('Keys must be at least 32 bytes long.');
 	}
 
 	const sk = concatSecrets([secret, ...keys]);
