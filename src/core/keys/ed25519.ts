@@ -1,33 +1,39 @@
-import * as elliptic from 'elliptic';
+import { sha512_256 } from '@noble/hashes/sha512';
+import { ed25519 } from '@noble/curves/ed25519';
 
-// eslint-disable-next-line new-cap
-const ed = new (elliptic as any).default.eddsa('ed25519');
+export function generateSecret(seed: Buffer): Buffer {
+	return Buffer.from(sha512_256(seed));
+}
+
+export function generatePublic(sk: Buffer): Buffer {
+	return Buffer.from(ed25519.getPublicKey(sk));
+}
 
 export function generateKeyPair(seed: Buffer): { sk: Buffer; pk: Buffer } {
-	const keys = ed.keyFromSecret(seed);
+	if (seed.length < 32) {
+		throw new Error('Seed must be at least 32 bytes long.');
+	}
+
+	const sk = generateSecret(seed);
 
 	return {
-		sk: keys.getSecret(),
-		pk: Buffer.from(keys.getPublic()),
+		sk,
+		pk: generatePublic(sk),
 	};
 }
 
-export async function generateSecret(seed: Buffer): Promise<Buffer> {
-	return ed.keyFromSecret(seed).getSecret();
+export function sign(message: Buffer, secret: Buffer): Buffer {
+	return Buffer.from(ed25519.sign(message, secret));
 }
 
-export async function generatePublic(seed: Buffer): Promise<Buffer> {
-	return ed.keyFromSecret(seed).getPublic();
+export function signFromString(message: string, secret: Buffer): Buffer {
+	return Buffer.from(ed25519.sign(new TextEncoder().encode(message), secret));
 }
 
-export async function sign(message: Buffer, secret: Buffer): Promise<Buffer> {
-	return ed.sign(message, secret).toBytes();
-}
-
-export async function verify(
+export function verify(
 	message: Buffer,
 	signature: Buffer,
 	publicKey: Buffer
-): Promise<boolean> {
-	return ed.verify(message, signature, publicKey);
+): boolean {
+	return ed25519.verify(signature, message, publicKey);
 }
