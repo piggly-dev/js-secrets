@@ -14,6 +14,10 @@ export class SecretManagerService {
 		this._path = abspath;
 	}
 
+	public get raw(): Map<string, Map<number, Buffer>> {
+		return this._secrets;
+	}
+
 	public async load(name: string, index_name?: string): Promise<true> {
 		if (this._secrets.has(name)) {
 			this._secrets.delete(name);
@@ -32,6 +36,7 @@ export class SecretManagerService {
 				secrets.set(i.version, fs.readFileSync(i.file));
 			});
 
+			this._secrets.set(name, secrets);
 			return true;
 		}
 

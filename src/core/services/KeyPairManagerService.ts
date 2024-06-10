@@ -14,6 +14,10 @@ export class KeyPairManagerService {
 		this._path = abspath;
 	}
 
+	public get raw(): Map<string, Map<number, { sk: Buffer; pk: Buffer }>> {
+		return this._keypairs;
+	}
+
 	public async load(name: string, index_name?: string): Promise<true> {
 		if (this._keypairs.has(name)) {
 			this._keypairs.delete(name);
@@ -35,6 +39,7 @@ export class KeyPairManagerService {
 				});
 			});
 
+			this._keypairs.set(name, keypairs);
 			return true;
 		}
 

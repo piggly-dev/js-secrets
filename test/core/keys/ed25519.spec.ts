@@ -7,7 +7,7 @@ import {
 	signFromString,
 } from '@/core/keys/ed25519';
 
-describe('Crypto Functions', () => {
+describe('core -> keys -> ed25519', () => {
 	const seed = Buffer.from('dP35fDThaWnNQSrj2xCqc48HGebEts9y'); // 32 bits
 
 	describe('generateKeyPair', () => {
