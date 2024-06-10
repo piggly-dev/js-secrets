@@ -1,0 +1,32 @@
+{
+	"presets": [
+		[
+			"@babel/preset-env",
+			{
+				"modules": false,
+				"targets": {
+					"node": "current"
+				}
+			}
+		],
+		[
+			"@babel/preset-typescript",
+			{ "rewriteImportExtensions": true, "tsconfig": "./tsconfig.babel.json" }
+		]
+	],
+	"plugins": [
+		[
+			"babel-plugin-module-resolver",
+			{
+				"root": ["./src"],
+				"alias": {
+					"@": "./src"
+				},
+				"extensions": [".js", ".ts", ".json"],
+				"transformFunctions": ["require", "import"],
+				"stripExtensions": [".ts"]
+			}
+		],
+		"babel-plugin-add-import-extension"
+	]
+}

@@ -1,9 +1,12 @@
 /build
 /coverage
 /node_modules
-/test
 /debug
 /.jest
+/tmp
+/dist
 
 *.config.js
+*.config.cjs
 *.config.json
+fixME.cjs

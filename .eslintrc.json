@@ -22,13 +22,16 @@
 	},
 	"settings": {
 		"import/parsers": {
-			"@typescript-eslint/parser": [".ts", ".tsx"]
+			"@typescript-eslint/parser": [".ts", "spec.ts"]
 		},
 		"import/resolver": {
 			"typescript": {
 				"project": "./tsconfig.json"
 			},
-			"alias": [["@", "./src"]]
+			"alias": [
+				["@", "./src"],
+				["#", "./test"]
+			]
 		}
 	},
 	"rules": {
@@ -57,7 +60,7 @@
 		],
 		"react/jsx-filename-extension": "off",
 		"import/extensions": "off",
-		"max-statements": ["error", 15],
+		"max-statements": ["error", 25],
 		"prettier/prettier": "error",
 		"@typescript-eslint/no-explicit-any": "off",
 		"no-console": "off",
@@ -65,6 +68,7 @@
 		"no-underscore-dangle": "off",
 		"class-methods-use-this": "off",
 		"import/no-extraneous-dependencies": "off",
-		"import/prefer-default-export": "off"
+		"import/prefer-default-export": "off",
+		"@typescript-eslint/no-shadow": "off"
 	}
 }

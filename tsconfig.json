@@ -19,7 +19,7 @@
 		"outDir": "./dist/esm",
 		"paths": {
 			"@/*": ["src/*"],
-			"@test/*": ["test/*"]
+			"#/*": ["test/*"]
 		},
 		"plugins": [
 			{
@@ -33,6 +33,10 @@
 	},
 	"include": ["./src/**/*", "./debug/**/*", "./test/**/*"],
 	"exclude": ["./node_modules/**/*", "./build/**/*"],
+	"ts-node": {
+		"require": ["tsconfig-paths/register"],
+		"files": true
+	},
 	"tsc-alias": {
 		"resolveFullPaths": true
 	}
