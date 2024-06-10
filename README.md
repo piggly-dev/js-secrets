@@ -2,7 +2,7 @@
 
 ![Typescript](https://img.shields.io/badge/language-typescript-blue?style=for-the-badge) ![NPM](https://img.shields.io/npm/v/@piggly/secrets?style=for-the-badge) [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=for-the-badge)](LICENSE)
 
-An ESM/CommonJS library for managing secrets in your application. The main goal of this library is to provide terminal commands (with npx) to generate secrets for your application from a mnemonic phrase. To achieve it, a lot of tools are used within micro functions.
+An ESM/CommonJS library for managing secrets in your application. The main goal of this library is to provide terminal commands (with npx) to **generate secrets for your application from a mnemonic phrase**. To achieve it, a lot of tools are used within micro functions.
 
 ## Features
 
