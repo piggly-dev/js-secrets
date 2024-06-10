@@ -7,11 +7,14 @@ import { VersionedKey } from '@/types';
 export class SecretManagerService {
 	private _secrets: Map<string, Map<number, Buffer>>;
 
+	private _current_version: number;
+
 	private _path: string;
 
-	constructor(abspath: string) {
+	constructor(abspath: string, current_version?: number) {
 		this._secrets = new Map();
 		this._path = abspath;
+		this._current_version = current_version ?? 1;
 	}
 
 	public get raw(): Map<string, Map<number, Buffer>> {
@@ -41,7 +44,7 @@ export class SecretManagerService {
 		}
 
 		const secret = fs.readFileSync(path.join(this._path, `${name}.secret.key`));
-		secrets.set(0, secret);
+		secrets.set(1, secret);
 
 		this._secrets.set(name, secrets);
 		return true;
@@ -53,15 +56,12 @@ export class SecretManagerService {
 		}
 
 		const secret = this._secrets.get(name) as Map<number, Buffer>;
+		const v = version ?? this._current_version;
 
-		if (version) {
-			if (secret.has(version) === false) {
-				throw Error(`Secret ${name} version ${version} not found.`);
-			}
-
-			return secret.get(version) as Buffer;
+		if (secret.has(v) === false) {
+			throw Error(`Secret ${name} version ${v} not found.`);
 		}
 
-		return secret.get(0) as Buffer;
+		return secret.get(v) as Buffer;
 	}
 }
