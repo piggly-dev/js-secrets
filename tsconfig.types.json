@@ -8,6 +8,7 @@
 		"noUnusedLocals": true,
 		"noUnusedParameters": false,
 		"importHelpers": true,
+		"isolatedModules": true,
 		"moduleResolution": "node",
 		"experimentalDecorators": true,
 		"esModuleInterop": true,
@@ -32,5 +33,9 @@
 		"types": ["node"]
 	},
 	"include": ["./src/**/*"],
-	"exclude": ["./node_modules/**/*", "./build/**/*", "./test/**/*"]
+	"exclude": ["./node_modules/**/*", "./build/**/*", "./test/**/*"],
+	"tsc-alias": {
+		"resolveFullPaths": true,
+		"resolveFullExtension": ".d.ts"
+	}
 }
