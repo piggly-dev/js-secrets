@@ -1,6 +1,6 @@
 {
 	"name": "@piggly/secrets",
-	"version": "0.1.0-dev",
+	"version": "0.1.0",
 	"description": "An ESM/CommonJS library to better manage local secrets.",
 	"type": "module",
 	"scripts": {
@@ -108,6 +108,6 @@
 		"slugify": "^1.6.6"
 	},
 	"engine": {
-		"node": ">=20.10"
+		"node": ">=18"
 	}
 }

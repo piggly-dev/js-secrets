@@ -22,6 +22,17 @@ function fixME() {
 						}
 					);
 				}
+
+				var binFile = path.join(buildDir, dir, '/bin/index.js');
+				if (fs.existsSync(binFile)) {
+					fs.chmod(binFile, 0o755, function (err) {
+						if (err) {
+							throw err;
+						}
+
+						console.log(`Permissions for ${binFile} set to executable.`);
+					});
+				}
 			}
 
 			if (dir === 'cjs') {
@@ -36,6 +47,17 @@ function fixME() {
 							}
 						}
 					);
+				}
+
+				var binFile = path.join(buildDir, dir, '/bin/index.js');
+				if (fs.existsSync(binFile)) {
+					fs.chmod(binFile, 0o755, function (err) {
+						if (err) {
+							throw err;
+						}
+
+						console.log(`Permissions for ${binFile} set to executable.`);
+					});
 				}
 			}
 		});
