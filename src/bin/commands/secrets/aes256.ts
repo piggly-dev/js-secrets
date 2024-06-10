@@ -29,11 +29,11 @@ export function generateAES256SecretCommand(program: Command) {
 
 				const generated = await generateSecret(
 					'aes256',
-					abspath,
 					mnemonic({
 						strength: parseInt(op.strength, 10),
 						language: op.language,
 					}),
+					abspath,
 					key_name,
 					version,
 					{
@@ -101,7 +101,7 @@ export function recoverAES256SecretCommand(program: Command) {
 				const abspath = parseAbspath(op.path);
 
 				if (index_name) {
-					await remove('keypairs', abspath, index_name, version);
+					await remove('secrets', abspath, index_name, version);
 				}
 
 				const generated = await generateSecret(

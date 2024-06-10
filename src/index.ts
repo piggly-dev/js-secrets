@@ -13,6 +13,7 @@ import {
 	generateSecret as generateSecretEd25519,
 	generatePublic as generatePublicEd25519,
 	sign as signEd25519,
+	signFromString as signFromStringEd25519,
 	verify as verifyEd25519,
 } from '@/core/keys/ed25519';
 import {
@@ -33,6 +34,7 @@ export const ed25519 = {
 	generateSecret: generateSecretEd25519,
 	generatePublic: generatePublicEd25519,
 	sign: signEd25519,
+	signFromString: signFromStringEd25519,
 	verify: verifyEd25519,
 };
 

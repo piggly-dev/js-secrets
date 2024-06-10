@@ -14,7 +14,6 @@ export function generateMnemonic(program: Command) {
 			'english'
 		)
 		.action(options => {
-			console.log(options);
 			console.log(chalk.yellow('Mnemonic'));
 
 			try {

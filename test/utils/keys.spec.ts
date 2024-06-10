@@ -270,7 +270,7 @@ describe('utils -> keys', () => {
 			expect(exists).toHaveBeenCalledWith(
 				path.join(mockPath, 'testKeyPair.pk.key')
 			);
-			expect(readAll).toHaveBeenCalledWith('secrets', mockPath, indexName);
+			expect(readAll).toHaveBeenCalledWith('keypairs', mockPath, indexName);
 			expect(versionExists).toHaveBeenCalledWith(indexes, 1);
 			expect(write).toHaveBeenCalledWith('keypairs', mockPath, indexName, [
 				{

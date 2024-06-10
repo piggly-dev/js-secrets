@@ -80,7 +80,7 @@ export async function keyPairsToFile(
 	let indexes: Array<VersionedKeyPair> = [];
 
 	if (indexable) {
-		indexes = await readAll<VersionedKeyPair>('secrets', abspath, index_name);
+		indexes = await readAll<VersionedKeyPair>('keypairs', abspath, index_name);
 
 		if (versionExists(indexes, version) === true) {
 			throw Error(`Version ${version} already exists.`);

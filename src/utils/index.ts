@@ -66,7 +66,7 @@ export function splitWords(input: string, chunkSize = 6): Array<Array<string>> {
 export function parseFileName(file: string): string {
 	return slugify(file, {
 		replacement: '_',
-		remove: /[^a-zA-Z0-9]/g,
+		remove: /[*+~.()'"!:@]/g,
 		lower: true,
 		strict: true,
 	});
