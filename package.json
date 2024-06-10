@@ -1,6 +1,6 @@
 {
 	"name": "@piggly/secrets",
-	"version": "0.3.0",
+	"version": "0.4.0",
 	"description": "An ESM/CommonJS library to better manage local secrets.",
 	"type": "module",
 	"scripts": {
@@ -10,7 +10,7 @@
 		"build": "npm run clean && npm run build:types && npm run build:esm && npm run build:cjs && node fixME.cjs",
 		"build:esm": "babel ./src --out-dir ./dist/esm --extensions \".ts\" --config-file ./babel.esm.json",
 		"build:cjs": "babel ./src --out-dir ./dist/cjs --extensions \".ts\" --config-file ./babel.cjs.json",
-		"build:types": "tsc -p tsconfig.types.json && tsc-alias -p tsconfig.types.json",
+		"build:types": "tsc -p tsconfig.types.json && tsc-alias -p tsconfig.types.json && node fixPaths.cjs",
 		"format": "prettier --write \"src/**/*.ts\"",
 		"lint": "eslint --ext .ts --ignore-path .gitignore --fix src",
 		"test": "cross-env NODE_ENV=test jest --colors --coverage --watchAll",

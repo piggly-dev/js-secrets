@@ -1,15 +1,16 @@
 {
 	"compilerOptions": {
-		"target": "esnext",
-		"module": "esnext",
+		"target": "ESNext",
+		"module": "ESNext",
 		"strict": true,
 		"declaration": true,
 		"emitDeclarationOnly": true,
+		"declarationDir": "./dist/types",
 		"noUnusedLocals": true,
 		"noUnusedParameters": false,
 		"importHelpers": true,
 		"isolatedModules": true,
-		"moduleResolution": "node",
+		"moduleResolution": "Node",
 		"experimentalDecorators": true,
 		"esModuleInterop": true,
 		"allowSyntheticDefaultImports": true,
@@ -24,8 +25,7 @@
 		},
 		"plugins": [
 			{
-				"transform": "@zerollup/ts-transform-paths",
-				"exclude": ["*"]
+				"transform": "@zerollup/ts-transform-paths"
 			}
 		],
 		"lib": ["esnext"],
@@ -33,9 +33,9 @@
 		"types": ["node"]
 	},
 	"include": ["./src/**/*"],
-	"exclude": ["./node_modules/**/*", "./build/**/*", "./test/**/*"],
+	"exclude": ["./node_modules/**/*", "./build/**/*", "./dist/**/*", "./test/**/*"],
 	"tsc-alias": {
 		"resolveFullPaths": true,
-		"resolveFullExtension": ".d.ts"
+		"verbose": true
 	}
 }
