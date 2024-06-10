@@ -66,3 +66,10 @@ export type VersionedKeyPair = {
 	name: string;
 	version: number;
 };
+
+export interface IKeyManagerService<KeyType = Buffer> {
+	load(index_name?: string): Promise<true>;
+	get(version?: number): KeyType;
+	get name(): string;
+	get current_version(): number;
+}

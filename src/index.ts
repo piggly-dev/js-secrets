@@ -27,6 +27,7 @@ import {
 } from '@/utils';
 
 export { KeyPairManagerService } from '@/core/services/KeyPairManagerService';
+export { AbstractKeyManagerService } from '@/core/services/AbstractKeyManagerService';
 export { SecretManagerService } from '@/core/services/SecretManagerService';
 
 export const ed25519 = {
@@ -68,4 +69,5 @@ export type {
 	GenerateSecretOptions,
 	VersionedKey,
 	VersionedKeyPair,
+	IKeyManagerService,
 } from '@/types';
