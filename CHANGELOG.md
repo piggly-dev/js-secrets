@@ -8,3 +8,7 @@
 
 * Add current version flag to `SecretManagerService` and `KeyPairManagerService`;
 * Types exports.
+
+## `v0.3.0` at `2024-06-10`
+
+* Add sourceMap to build.

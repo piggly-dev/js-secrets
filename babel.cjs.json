@@ -11,7 +11,7 @@
 		],
 		[
 			"@babel/preset-typescript",
-			{ "rewriteImportExtensions": true, "tsconfig": "./tsconfig.babel.json" }
+			{ "rewriteImportExtensions": true, "tsconfig": "./tsconfig.cjs.json" }
 		]
 	],
 	"plugins": [
@@ -29,5 +29,6 @@
 			}
 		],
 		"babel-plugin-add-import-extension"
-	]
+	],
+	"sourceMaps": "inline"
 }

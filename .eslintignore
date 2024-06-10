@@ -10,3 +10,4 @@
 *.config.cjs
 *.config.json
 fixME.cjs
+addDeclarationFilesExtension.cjs
