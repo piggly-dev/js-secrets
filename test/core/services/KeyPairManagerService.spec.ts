@@ -27,7 +27,7 @@ describe('core -> services -> KeyPairManagerService', () => {
 
 	beforeEach(() => {
 		jest.clearAllMocks();
-		keyPairManager = new KeyPairManagerService(mockPath);
+		keyPairManager = new KeyPairManagerService(mockName, mockPath);
 	});
 
 	describe('load', () => {
@@ -42,7 +42,7 @@ describe('core -> services -> KeyPairManagerService', () => {
 				return null;
 			});
 
-			const result = await keyPairManager.load(mockName);
+			const result = await keyPairManager.load();
 
 			expect(result).toBe(true);
 			expect(fs.readFileSync).toHaveBeenCalledWith(
@@ -51,7 +51,7 @@ describe('core -> services -> KeyPairManagerService', () => {
 			expect(fs.readFileSync).toHaveBeenCalledWith(
 				path.join(mockPath, `${mockName}.pk.key`)
 			);
-			expect(keyPairManager.raw.get(mockName)?.get(1)).toEqual({
+			expect(keyPairManager.raw.get(1)).toEqual({
 				sk: mockSecretKey,
 				pk: mockPublicKey,
 			});
@@ -69,15 +69,13 @@ describe('core -> services -> KeyPairManagerService', () => {
 				return null;
 			});
 
-			const result = await keyPairManager.load(mockName, mockIndexName);
+			const result = await keyPairManager.load(mockIndexName);
 
 			expect(result).toBe(true);
 			expect(readAll).toHaveBeenCalledWith('keypairs', mockPath, mockIndexName);
 			expect(fs.readFileSync).toHaveBeenCalledWith(mockVersionedKeyPair.sk);
 			expect(fs.readFileSync).toHaveBeenCalledWith(mockVersionedKeyPair.pk);
-			expect(
-				keyPairManager.raw.get(mockName)?.get(mockVersionedKeyPair.version)
-			).toEqual({
+			expect(keyPairManager.raw.get(mockVersionedKeyPair.version)).toEqual({
 				sk: mockSecretKey,
 				pk: mockPublicKey,
 			});
@@ -98,33 +96,30 @@ describe('core -> services -> KeyPairManagerService', () => {
 			await keyPairManager.load(mockName);
 		});
 
-		it('should get the loaded key pair', async () => {
-			const keyPair = await keyPairManager.get(mockName);
+		it('should get the loaded key pair', () => {
+			const keyPair = keyPairManager.get();
 
 			expect(keyPair).toEqual({ sk: mockSecretKey, pk: mockPublicKey });
 		});
 
-		it('should throw an error if the key pair is not found', async () => {
-			await expect(keyPairManager.get('nonExistentKeyPair')).rejects.toThrow(
-				'Key-pair nonExistentKeyPair not found.'
+		it('should throw an error if the key pair is not found', () => {
+			expect(() => keyPairManager.get(10)).toThrow(
+				'Key/secret version 10 not found for testKeyPair.'
 			);
 		});
 
 		it('should get the loaded key pair with a specific version', async () => {
 			(readAll as jest.Mock).mockResolvedValue([mockVersionedKeyPair]);
-			await keyPairManager.load(mockName, mockIndexName);
+			await keyPairManager.load(mockIndexName);
 
-			const keyPair = await keyPairManager.get(
-				mockName,
-				mockVersionedKeyPair.version
-			);
+			const keyPair = keyPairManager.get(mockVersionedKeyPair.version);
 
 			expect(keyPair).toEqual({ sk: mockSecretKey, pk: mockPublicKey });
 		});
 
-		it('should throw an error if the versioned key pair is not found', async () => {
-			await expect(keyPairManager.get(mockName, 2)).rejects.toThrow(
-				`Key-pair ${mockName} version 2 not found.`
+		it('should throw an error if the versioned key pair is not found', () => {
+			expect(() => keyPairManager.get(2)).toThrow(
+				`Key/secret version 2 not found for testKeyPair.`
 			);
 		});
 	});

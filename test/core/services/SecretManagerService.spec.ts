@@ -25,34 +25,32 @@ describe('core -> services -> SecretManagerService', () => {
 
 	beforeEach(() => {
 		jest.clearAllMocks();
-		secretManager = new SecretManagerService(mockPath);
+		secretManager = new SecretManagerService(mockName, mockPath);
 	});
 
 	describe('load', () => {
 		it('should load a secret without an index', async () => {
 			(fs.readFileSync as jest.Mock).mockReturnValue(mockSecret);
 
-			const result = await secretManager.load(mockName);
+			const result = await secretManager.load();
 
 			expect(result).toBe(true);
 			expect(fs.readFileSync).toHaveBeenCalledWith(
 				path.join(mockPath, `${mockName}.secret.key`)
 			);
-			expect(secretManager.raw.get(mockName)?.get(1)).toEqual(mockSecret);
+			expect(secretManager.raw.get(1)).toEqual(mockSecret);
 		});
 
 		it('should load secrets with an index', async () => {
 			(readAll as jest.Mock).mockResolvedValue([mockVersionedKey]);
 			(fs.readFileSync as jest.Mock).mockReturnValue(mockSecret);
 
-			const result = await secretManager.load(mockName, mockIndexName);
+			const result = await secretManager.load(mockIndexName);
 
 			expect(result).toBe(true);
 			expect(readAll).toHaveBeenCalledWith('secrets', mockPath, mockIndexName);
 			expect(fs.readFileSync).toHaveBeenCalledWith(mockVersionedKey.file);
-			expect(
-				secretManager.raw.get(mockName)?.get(mockVersionedKey.version)
-			).toEqual(mockSecret);
+			expect(secretManager.raw.get(mockVersionedKey.version)).toEqual(mockSecret);
 		});
 	});
 
@@ -62,30 +60,30 @@ describe('core -> services -> SecretManagerService', () => {
 			await secretManager.load(mockName);
 		});
 
-		it('should get the loaded secret', async () => {
-			const secret = await secretManager.get(mockName);
+		it('should get the loaded secret', () => {
+			const secret = secretManager.get();
 
 			expect(secret).toEqual(mockSecret);
 		});
 
 		it('should throw an error if the secret is not found', async () => {
-			await expect(secretManager.get('nonExistentSecret')).rejects.toThrow(
-				'Secret nonExistentSecret not found.'
+			expect(() => secretManager.get(10)).toThrow(
+				'Key/secret version 10 not found for testSecret.'
 			);
 		});
 
 		it('should get the loaded secret with a specific version', async () => {
 			(readAll as jest.Mock).mockResolvedValue([mockVersionedKey]);
 			(fs.readFileSync as jest.Mock).mockReturnValue(mockSecret);
-			await secretManager.load(mockName, mockIndexName);
-			const secret = await secretManager.get(mockName, mockVersionedKey.version);
+			await secretManager.load(mockIndexName);
+			const secret = secretManager.get(mockVersionedKey.version);
 
 			expect(secret).toEqual(mockSecret);
 		});
 
 		it('should throw an error if the versioned secret is not found', async () => {
-			await expect(secretManager.get(mockName, 2)).rejects.toThrow(
-				`Secret ${mockName} version 2 not found.`
+			expect(() => secretManager.get(2)).toThrow(
+				`Key/secret version 2 not found for testSecret.`
 			);
 		});
 	});

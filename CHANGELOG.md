@@ -16,3 +16,7 @@
 ## `v0.4.0` at `2024-06-10`
 
 * Add `.js` extension to `.d.ts` files.
+
+## `v0.5.0` at `2024-06-10`
+
+* Change behavior for Services manager.
