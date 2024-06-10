@@ -22,13 +22,16 @@
 	},
 	"settings": {
 		"import/parsers": {
-			"@typescript-eslint/parser": [".ts", ".tsx"]
+			"@typescript-eslint/parser": [".ts", "spec.ts"]
 		},
 		"import/resolver": {
 			"typescript": {
 				"project": "./tsconfig.json"
 			},
-			"alias": [["@", "./src"]]
+			"alias": [
+				["@", "./src"],
+				["#", "./test"]
+			]
 		}
 	},
 	"rules": {

@@ -12,22 +12,17 @@ module.exports = {
 			statements: 60,
 		},
 	},
-	collectCoverageFrom: ['<rootDir>/src/**/*.{ts}'],
 	coveragePathIgnorePatterns: ['./node_modules/', './tests/', './debug', './build'],
 	coverageReporters: ['json-summary', 'text', 'lcov'],
 	transform: {
-		// '^.+\\.(js|jsx|mjs)$': 'babel-jest',
 		'^.+\\.(mt|t|cj|j)s$': [
-			'ts-jest',
+			'babel-jest',
 			{
-				useESM: true,
-				diagnostics: false,
-				tsconfig: 'tsconfig.json',
+				configFile: './babel.jest.json',
 			},
 		],
 	},
-	preset: 'ts-jest',
-	moduleFileExtensions: ['ts', 'js'],
+	moduleFileExtensions: ['ts', 'js', 'json', 'node'],
 	moduleNameMapper: {
 		'@/(.*)\\.js': '<rootDir>/src/$1',
 		'#/(.*)\\.js': '<rootDir>/tests/$1',
@@ -35,5 +30,4 @@ module.exports = {
 		'#/(.*)': '<rootDir>/tests/$1',
 	},
 	moduleDirectories: ['node_modules', '<rootDir>/src'],
-	extensionsToTreatAsEsm: ['.ts'],
 };

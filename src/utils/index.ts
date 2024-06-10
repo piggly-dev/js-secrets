@@ -31,8 +31,8 @@ export async function seed(
 	return mnemonicToSeed(mnemonic, options.password);
 }
 
-export function hash(algorithm: string, message: string) {
-	return crypto.hash(algorithm, message, 'buffer');
+export function hash(algorithm: string, message: string): Buffer {
+	return crypto.createHash(algorithm).update(message).digest();
 }
 
 export function cutBuffer(buffer: Buffer, length: number): Buffer {

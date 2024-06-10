@@ -35,16 +35,16 @@ export async function secretToFile(
 		}
 	}
 
-	const wrote = await writeFile(key_file, secret);
+	await writeFile(key_file, secret);
 
 	if (indexable === false) {
-		return { file: wrote, name, version };
+		return { file: key_file, name, version };
 	}
 
 	indexes.push({ file: key_file, name, version });
 	const indexed = await write('secrets', abspath, index_name as string, indexes);
 
-	return { file: wrote, name, version, index: indexed };
+	return { file: key_file, name, version, index: indexed };
 }
 
 export async function keyPairsToFile(
@@ -87,15 +87,15 @@ export async function keyPairsToFile(
 		}
 	}
 
-	const sk_filepath = await writeFile(sk_file, key.sk);
-	const pk_filepath = await writeFile(pk_file, key.pk);
+	await writeFile(sk_file, key.sk);
+	await writeFile(pk_file, key.pk);
 
 	if (indexable === false) {
-		return { sk: sk_filepath, pk: pk_filepath, name, version };
+		return { sk: sk_file, pk: pk_file, name, version };
 	}
 
-	indexes.push({ sk: sk_filepath, pk: pk_filepath, name, version });
+	indexes.push({ sk: sk_file, pk: pk_file, name, version });
 	const indexed = await write('keypairs', abspath, index_name as string, indexes);
 
-	return { sk: sk_filepath, pk: pk_filepath, name, version, index: indexed };
+	return { sk: sk_file, pk: pk_file, name, version, index: indexed };
 }
