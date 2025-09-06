@@ -76,6 +76,17 @@ export const derIntZero = (): Buffer => {
 };
 
 /**
+ * Convert a DER buffer to a integer one.
+ *
+ * @returns
+ * @since 1.0.0
+ * @author Caique Araujo <caique@piggly.com.br>
+ */
+export const derIntOne = (): Buffer => {
+	return derTag(0x02, Buffer.from([0x01]));
+};
+
+/**
  * Convert a DER buffer to a octet string.
  *
  * @param bytes - The bytes to convert.

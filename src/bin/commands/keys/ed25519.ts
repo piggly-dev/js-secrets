@@ -5,7 +5,16 @@ import chalk from 'chalk';
 import { generateKeyPair, recoverKeyPair } from '@/core/index.js';
 import { parseFileName, parseAbspath } from '@/utils/index.js';
 import { remove } from '@/utils/indexes.js';
+import { exists } from '@/utils/file.js';
 
+/**
+ * Generate a key-pair based on a mnemonic phrase. It will use the ed25519 algorithm.
+ *
+ * @param program - The program to add the command to.
+ * @returns The program.
+ * @since 1.0.0
+ * @author Caique Araujo <caique@piggly.com.br>
+ */
 export function generateEd25519KeyPairCommand(program: Command) {
 	program
 		.command('generate:ed25519')
@@ -13,37 +22,72 @@ export function generateEd25519KeyPairCommand(program: Command) {
 			'Generates a key-pair based on a mnemonic phrase. It will use the ed25519 algorithm.',
 		)
 		.argument('<name>', 'Name of the key.')
-		.argument('<version>', 'Version of the key. Should be an integer.')
-		.option('-p, --path <path>', 'Path to save the key.')
 		.option(
-			'-x, --index <index>',
-			'Index name. Will store the key in a JSON index.',
+			'-p, --path <path>',
+			'Path to save the key. Default is current directory. If relative, it will be relative to current directory.',
 		)
 		.option('-w, --password <password>', 'Password for seed generation.')
-		.option('-l, --language <language>', 'Language of mnemonic.', 'english')
-		.action(async (n, v, op) => {
+		.option(
+			'-l, --language <language>',
+			'Language of mnemonic. Available: czech, chinese_simplified, chinese_traditional, korean, french, italian, spanish, japanese, portuguese, english. Default is english.',
+			'english',
+		)
+		.option(
+			'-s, --strength <strength>',
+			'Strength of mnemonic. Default is 128.',
+			'128',
+		)
+		.option(
+			'-v, --version <version>',
+			'Version of the key. Should be an integer. Default is 1.',
+			'1',
+		)
+		.option(
+			'-x, --index <index>',
+			'Index name. Will store the key in a JSON index. If not provided, index will not be created.',
+		)
+		.option(
+			'-f, --format <format>',
+			'Format of the key: pem or raw. Default is raw.',
+			'raw',
+		)
+		.action(async (n, op) => {
 			try {
-				const version = parseInt(v, 10);
+				const version = parseInt(op.version, 10);
 				const key_name = parseFileName(n);
 				const index_name = op.index ? parseFileName(op.index) : undefined;
-				const abspath = parseAbspath(op.path);
+				const abspath = parseAbspath(process.cwd(), op.path);
+				let format = op.format;
 
-				const generated = await generateKeyPair(
-					'ed25519',
-					abspath,
-					key_name,
-					version,
-					{
-						mnemonic: {
-							language: op.language,
-							strength: parseInt(op.strength, 10),
-						},
-						seed: {
-							password: op.password,
-						},
-					},
+				switch (format) {
+					case 'pem':
+						format = 'pem';
+						break;
+					case 'raw':
+						format = 'raw';
+						break;
+					default:
+						throw Error(`Format ${format} not supported.`);
+				}
+
+				if (exists(abspath) === false) {
+					throw Error(
+						`"Path ${abspath} does not exist. Please create it first."`,
+					);
+				}
+
+				const generated = await generateKeyPair('ed25519', abspath, key_name, {
+					format,
 					index_name,
-				);
+					mnemonic: {
+						language: op.language,
+						strength: parseInt(op.strength, 10),
+					},
+					seed: {
+						password: op.password,
+					},
+					version,
+				});
 
 				console.log(chalk.green('Public key generated at:'), generated.files.pk);
 				console.log(chalk.green('Secret key generated at:'), generated.files.sk);
@@ -71,6 +115,15 @@ export function generateEd25519KeyPairCommand(program: Command) {
 		});
 }
 
+/**
+ * Recover a key-pair from a mnemonic and save it to a file. It will remove the
+ * previous key from index when index is set.
+ *
+ * @param program - The program to add the command to.
+ * @returns The program.
+ * @since 1.0.0
+ * @author Caique Araujo <caique@piggly.com.br>
+ */
 export function recoverEd25519KeyPairCommand(program: Command) {
 	program
 		.command('recover:ed25519')
@@ -78,15 +131,24 @@ export function recoverEd25519KeyPairCommand(program: Command) {
 			'Recovers a key-pair from a mnemonic and save it to a file. It will remove the previous key from index when index is set.',
 		)
 		.argument('<name>', 'Name of the key.')
-		.argument('<version>', 'Version of the key. Should be an integer.')
 		.option('-p, --path <path>', 'Path to save the key.')
-		.option(
-			'-x, --index <index>',
-			'Index name. Will store the key in a JSON index.',
-		)
 		.option('-m, --mnemonic <mnemonic>', 'Mnemonic to recover the key.')
 		.option('-w, --password <password>', 'Password for seed generation.')
-		.action(async (n, v, op) => {
+		.option(
+			'-v, --version <version>',
+			'Version of the key. Should be an integer. Default is 1.',
+			'1',
+		)
+		.option(
+			'-x, --index <index>',
+			'Index name. Will store the key in a JSON index. If not provided, it will not collected from index.',
+		)
+		.option(
+			'-f, --format <format>',
+			'Format of the key: pem or raw. Default is raw.',
+			'raw',
+		)
+		.action(async (n, op) => {
 			try {
 				const { mnemonic } = op;
 
@@ -94,10 +156,22 @@ export function recoverEd25519KeyPairCommand(program: Command) {
 					throw Error('Mnemonic is required.');
 				}
 
-				const version = parseInt(v, 10);
 				const key_name = parseFileName(n);
 				const index_name = op.index ? parseFileName(op.index) : undefined;
-				const abspath = parseAbspath(op.path);
+				const abspath = parseAbspath(process.cwd(), op.path);
+				const version = parseInt(op.version, 10);
+				let format = op.format;
+
+				switch (format) {
+					case 'pem':
+						format = 'pem';
+						break;
+					case 'raw':
+						format = 'raw';
+						break;
+					default:
+						throw Error(`Format ${format} not supported.`);
+				}
 
 				if (index_name) {
 					await remove('keypairs', abspath, index_name, version);
@@ -108,13 +182,14 @@ export function recoverEd25519KeyPairCommand(program: Command) {
 					mnemonic,
 					abspath,
 					key_name,
-					version,
 					{
+						format,
+						index_name,
 						seed: {
 							password: op.password,
 						},
+						version,
 					},
-					index_name,
 				);
 
 				console.log(chalk.green('Public key recovered at:'), generated.files.pk);

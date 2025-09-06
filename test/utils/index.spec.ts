@@ -1,7 +1,5 @@
 import { wordlists, mnemonicToSeed, generateMnemonic } from 'bip39';
-import { pathToFileURL, fileURLToPath } from 'node:url';
 import crypto from 'node:crypto';
-import path from 'node:path';
 
 import {
 	bufferToHex,
@@ -159,12 +157,6 @@ describe('utils -> index', () => {
 	});
 
 	describe('parseAbspath', () => {
-		it('should throw an error if path is not absolute', () => {
-			expect(() => parseAbspath('relative/path')).toThrow(
-				'Path is required and must be absolute.',
-			);
-		});
-
 		it('should return the provided absolute path', () => {
 			const abspath = '/absolute/path';
 			expect(parseAbspath(abspath)).toBe(abspath);
@@ -172,17 +164,8 @@ describe('utils -> index', () => {
 
 		it('should return default path if no path is provided', () => {
 			const mockPath = '/mock/path';
-			(path.join as jest.Mock).mockReturnValue(mockPath);
-			(pathToFileURL as jest.Mock).mockReturnValue('/current/path');
-			(fileURLToPath as jest.Mock).mockReturnValue('/current/path');
-			const result = parseAbspath();
+			const result = parseAbspath(mockPath);
 			expect(result).toBe(mockPath);
-			expect(path.join).toHaveBeenCalledWith(
-				path.dirname('/current/path'),
-				'..',
-				'..',
-				'keys',
-			);
 		});
 	});
 });

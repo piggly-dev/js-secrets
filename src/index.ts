@@ -35,6 +35,14 @@ import {
 	seed,
 	hash,
 } from '@/utils/index.js';
+import {
+	compare as compareArgon2,
+	hash as hashArgon2,
+} from '@/core/passwords/argon2.js';
+import {
+	compare as compareBcrypt,
+	hash as hashBcrypt,
+} from '@/core/passwords/bcrypt.js';
 
 export { AbstractKeyManagerService } from '@/core/services/AbstractKeyManagerService.js';
 export { KeyPairManagerService } from '@/core/services/KeyPairManagerService.js';
@@ -52,6 +60,16 @@ export const ed25519 = {
 	signFromString: signFromStringEd25519,
 	verify: verifyEd25519,
 	verifyFromString: verifyFromStringEd25519,
+};
+
+export const bcrypt = {
+	compare: compareBcrypt,
+	hash: hashBcrypt,
+};
+
+export const argon2 = {
+	compare: compareArgon2,
+	hash: hashArgon2,
 };
 
 export const aes256 = {

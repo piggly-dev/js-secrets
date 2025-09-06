@@ -40,8 +40,11 @@ export type GenerateKDFWithScryptOptions = Partial<{
 }>;
 
 export type GenerateKeyPairOptions = Partial<{
+	format: 'pem' | 'raw';
+	index_name?: string;
 	mnemonic: GenerateMnemonicOptions;
 	seed: GenerateMnemonicSeedOptions;
+	version?: number;
 }>;
 
 export type GenerateMnemonicOptions = Partial<{
@@ -55,7 +58,10 @@ export type GenerateMnemonicSeedOptions = Partial<{
 }>;
 
 export type GenerateSecretOptions = Partial<{
+	index_name?: string;
+	recover?: boolean;
 	seed: GenerateMnemonicSeedOptions;
+	version: number;
 }>;
 
 export interface IKeyManagerService<KeyType = Buffer> {

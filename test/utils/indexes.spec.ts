@@ -4,7 +4,7 @@ import { write, readAll, readKey, remove, versionExists } from '@/utils/indexes.
 import { readFile, writeFile } from '@/utils/file.js';
 import { VersionedKey } from '@/types/index.js';
 
-jest.mock('@/utils/file', () => ({
+jest.mock('@/utils/file.js', () => ({
 	readFile: jest.fn(),
 	writeFile: jest.fn(),
 }));

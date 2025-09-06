@@ -8,6 +8,7 @@ import {
 	derOidEd25519,
 	derBitString,
 	derIntZero,
+	derIntOne,
 	derSeq,
 	toPem,
 } from '@/utils/pem.js';
@@ -238,13 +239,14 @@ export function publicToPem(pk: Buffer): string {
  *
  * @param sk - The secret key to export.
  * @param pk - The public key to export.
+ * @param version - The version of the key.
  * @throws {Error} If the secret key is not 32 bytes long.
  * @throws {Error} If the public key is not 32 bytes long.
  * @returns The private key in PKCS#8 PEM format.
  * @since 1.0.0
  * @author Caique Araujo <caique@piggly.com.br>
  */
-export function secretToPem(sk: Buffer, pk?: Buffer): string {
+export function secretToPem(sk: Buffer, pk?: Buffer, version: number = 1): string {
 	if (sk.length !== 32) {
 		throw new Error('Secret key must be 32 bytes long.');
 	}
@@ -253,18 +255,28 @@ export function secretToPem(sk: Buffer, pk?: Buffer): string {
 		throw new Error('Public key must be 32 bytes long.');
 	}
 
-	const pub = pk ?? Buffer.from(ed25519.getPublicKey(sk));
-
-	const version = derIntZero();
 	const privateKeyAlgorithm = derSeq(derOidEd25519());
 
 	const inner = derOctetString(sk);
 	const privateKey = derOctetString(inner);
 
-	const withPublicKey = derContext1BitString(pub);
-
-	return toPem(
-		'PRIVATE KEY',
-		derSeq(version, privateKeyAlgorithm, privateKey, withPublicKey),
-	);
+	switch (version) {
+		case 1:
+			return toPem(
+				'PRIVATE KEY',
+				derSeq(derIntZero(), privateKeyAlgorithm, privateKey),
+			);
+		case 2:
+			return toPem(
+				'PRIVATE KEY',
+				derSeq(
+					derIntOne(),
+					privateKeyAlgorithm,
+					privateKey,
+					derContext1BitString(pk ?? Buffer.from(ed25519.getPublicKey(sk))),
+				),
+			);
+		default:
+			throw new Error(`Version ${version} not supported.`);
+	}
 }

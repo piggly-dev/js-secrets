@@ -1,19 +1,27 @@
 import { GenerateKeyPairOptions, GenerateSecretOptions } from '@/types/index.js';
 import { keyPairsToFile, secretToFile } from '@/utils/keys.js';
 import { mnemonic, seed } from '@/utils/index.js';
-
 import * as ed25519 from '@/core/keys/ed25519.js';
 import * as aes from '@/core/secrets/aes256.js';
 
+/**
+ * Generate a key pair.
+ *
+ * @param algorithm - The algorithm to use.
+ * @param abspath - The path to save the key pair.
+ * @param key_name - The name of the key pair.
+ * @param options - The options to generate the key pair.
+ * @returns The key pair.
+ * @since 1.0.0
+ * @author Caique Araujo <caique@piggly.com.br>
+ */
 export async function generateKeyPair(
 	algorithm: string,
 	abspath: string,
 	key_name: string,
-	version: number,
 	options: GenerateKeyPairOptions,
-	index_name?: string,
 ): Promise<{
-	files: { index?: string; name: string; pk: string; sk: string; version: number };
+	files: { index?: string; name: string; pk: string; sk: string; version?: number };
 	mnemonic: string;
 }> {
 	if (supportsKeyAlgorithm(algorithm) === false) {
@@ -33,7 +41,7 @@ export async function generateKeyPair(
 			throw Error(`Algorithm ${algorithm} not supported.`);
 	}
 
-	const files = await keyPairsToFile(abspath, key_name, version, keys, index_name);
+	const files = await keyPairsToFile(abspath, key_name, keys, options);
 
 	return {
 		files,
@@ -41,17 +49,26 @@ export async function generateKeyPair(
 	};
 }
 
+/**
+ * Generate a secret.
+ *
+ * @param algorithm - The algorithm to use.
+ * @param mnemonic - The mnemonic to use.
+ * @param abspath - The path to save the secret.
+ * @param key_name - The name of the key.
+ * @param options - The options to generate the secret.
+ * @returns The secret.
+ * @since 1.0.0
+ * @author Caique Araujo <caique@piggly.com.br>
+ */
 export async function generateSecret(
 	algorithm: string,
 	mnemonic: string,
 	abspath: string,
 	key_name: string,
-	version: number,
 	options: GenerateSecretOptions,
-	index_name?: string,
-	recover = false,
 ): Promise<{
-	files: { file: string; index?: string; name: string; version: number };
+	files: { file: string; index?: string; name: string; version?: number };
 	mnemonic: string;
 }> {
 	if (supportsEncryptAlgorithm(algorithm) === false) {
@@ -70,14 +87,7 @@ export async function generateSecret(
 			throw Error(`Algorithm ${algorithm} not supported.`);
 	}
 
-	const files = await secretToFile(
-		abspath,
-		key_name,
-		version,
-		key,
-		index_name,
-		recover,
-	);
+	const files = await secretToFile(abspath, key_name, key, options);
 
 	return {
 		files,
@@ -85,16 +95,26 @@ export async function generateSecret(
 	};
 }
 
+/**
+ * Recover a key pair.
+ *
+ * @param algorithm - The algorithm to use.
+ * @param mnemonic
+ * @param abspath
+ * @param key_name - The name of the key.
+ * @param options - The options to recover the key.
+ * @returns The key.
+ * @since 1.0.0
+ * @author Caique Araujo <caique@piggly.com.br>
+ */
 export async function recoverKeyPair(
 	algorithm: string,
 	mnemonic: string,
 	abspath: string,
 	key_name: string,
-	version: number,
 	options: Omit<GenerateKeyPairOptions, 'mnemonic'>,
-	index_name?: string,
 ): Promise<{
-	files: { index?: string; name: string; pk: string; sk: string; version: number };
+	files: { index?: string; name: string; pk: string; sk: string; version?: number };
 	mnemonic: string;
 }> {
 	if (supportsKeyAlgorithm(algorithm) === false) {
@@ -113,14 +133,10 @@ export async function recoverKeyPair(
 			throw Error(`Algorithm ${algorithm} not supported.`);
 	}
 
-	const files = await keyPairsToFile(
-		abspath,
-		key_name,
-		version,
-		keys,
-		index_name,
-		true,
-	);
+	const files = await keyPairsToFile(abspath, key_name, keys, {
+		...options,
+		replace: true,
+	});
 
 	return {
 		files,
@@ -128,10 +144,26 @@ export async function recoverKeyPair(
 	};
 }
 
+/**
+ * Check if the algorithm is supported for encryption.
+ *
+ * @param algorithm - The algorithm to check.
+ * @returns True if the algorithm is supported, false otherwise.
+ * @since 1.0.0
+ * @author Caique Araujo <caique@piggly.com.br>
+ */
 export function supportsEncryptAlgorithm(algorithm: string): boolean {
 	return ['aes256'].includes(algorithm);
 }
 
+/**
+ * Check if the algorithm is supported for key generation.
+ *
+ * @param algorithm - The algorithm to check.
+ * @returns True if the algorithm is supported, false otherwise.
+ * @since 1.0.0
+ * @author Caique Araujo <caique@piggly.com.br>
+ */
 export function supportsKeyAlgorithm(algorithm: string): boolean {
 	return ['ed25519'].includes(algorithm);
 }

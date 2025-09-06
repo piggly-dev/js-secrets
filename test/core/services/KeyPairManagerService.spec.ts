@@ -6,7 +6,7 @@ import { VersionedKeyPair } from '@/types/index.js';
 import { readAll } from '@/utils/indexes.js';
 
 jest.mock('fs');
-jest.mock('@/utils/indexes', () => ({
+jest.mock('@/utils/indexes.js', () => ({
 	readAll: jest.fn(),
 }));
 

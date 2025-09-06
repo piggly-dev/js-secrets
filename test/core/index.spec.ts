@@ -11,21 +11,21 @@ import * as ed25519 from '@/core/keys/ed25519.js';
 import * as aes from '@/core/secrets/aes256.js';
 import { mnemonic, seed } from '@/utils/index.js';
 
-jest.mock('@/utils/keys', () => ({
+jest.mock('@/utils/keys.js', () => ({
 	keyPairsToFile: jest.fn(),
 	secretToFile: jest.fn(),
 }));
 
-jest.mock('@/utils', () => ({
+jest.mock('@/utils/index.js', () => ({
 	mnemonic: jest.fn(),
 	seed: jest.fn(),
 }));
 
-jest.mock('@/core/keys/ed25519', () => ({
+jest.mock('@/core/keys/ed25519.js', () => ({
 	generateKeyPair: jest.fn(),
 }));
 
-jest.mock('@/core/secrets/aes256', () => ({
+jest.mock('@/core/secrets/aes256.js', () => ({
 	generateSecret: jest.fn(),
 }));
 
@@ -77,13 +77,13 @@ describe('core -> index', () => {
 			const options: GenerateKeyPairOptions = {
 				mnemonic: { language: 'english' },
 				seed: { password: 'test password' },
+				version: mockVersion,
 			};
 
 			const result = await generateKeyPair(
 				'ed25519',
 				mockPath,
 				mockKeyName,
-				mockVersion,
 				options,
 			);
 
@@ -93,9 +93,8 @@ describe('core -> index', () => {
 			expect(keyPairsToFile).toHaveBeenCalledWith(
 				mockPath,
 				mockKeyName,
-				mockVersion,
 				mockKeys,
-				undefined,
+				options,
 			);
 			expect(result).toEqual({
 				mnemonic: mockMnemonic,
@@ -113,10 +112,11 @@ describe('core -> index', () => {
 			const options: GenerateKeyPairOptions = {
 				mnemonic: { language: 'english' },
 				seed: { password: 'test password' },
+				version: mockVersion,
 			};
 
 			await expect(
-				generateKeyPair('rsa', mockPath, mockKeyName, mockVersion, options),
+				generateKeyPair('rsa', mockPath, mockKeyName, options),
 			).rejects.toThrow('Algorithm rsa not supported.');
 		});
 	});
@@ -125,6 +125,7 @@ describe('core -> index', () => {
 		it('should recover a key pair', async () => {
 			const options: Omit<GenerateKeyPairOptions, 'mnemonic'> = {
 				seed: { password: 'test password' },
+				version: mockVersion,
 			};
 
 			const result = await recoverKeyPair(
@@ -132,7 +133,6 @@ describe('core -> index', () => {
 				mockMnemonic,
 				mockPath,
 				mockKeyName,
-				mockVersion,
 				options,
 			);
 
@@ -141,10 +141,8 @@ describe('core -> index', () => {
 			expect(keyPairsToFile).toHaveBeenCalledWith(
 				mockPath,
 				mockKeyName,
-				mockVersion,
 				mockKeys,
-				undefined,
-				true,
+				{ ...options, replace: true },
 			);
 			expect(result).toEqual({
 				mnemonic: mockMnemonic,
@@ -161,17 +159,11 @@ describe('core -> index', () => {
 		it('should throw an error for unsupported algorithms', async () => {
 			const options: Omit<GenerateKeyPairOptions, 'mnemonic'> = {
 				seed: { password: 'test password' },
+				version: mockVersion,
 			};
 
 			await expect(
-				recoverKeyPair(
-					'rsa',
-					mockMnemonic,
-					mockPath,
-					mockKeyName,
-					mockVersion,
-					options,
-				),
+				recoverKeyPair('rsa', mockMnemonic, mockPath, mockKeyName, options),
 			).rejects.toThrow('Algorithm rsa not supported.');
 		});
 	});
@@ -190,6 +182,7 @@ describe('core -> index', () => {
 		it('should generate a secret', async () => {
 			const options: GenerateSecretOptions = {
 				seed: { password: 'test password' },
+				version: mockVersion,
 			};
 
 			const result = await generateSecret(
@@ -197,7 +190,6 @@ describe('core -> index', () => {
 				mockMnemonic,
 				mockPath,
 				mockKeyName,
-				mockVersion,
 				options,
 			);
 
@@ -206,10 +198,8 @@ describe('core -> index', () => {
 			expect(secretToFile).toHaveBeenCalledWith(
 				mockPath,
 				mockKeyName,
-				mockVersion,
 				mockSecret,
-				undefined,
-				false,
+				options,
 			);
 			expect(result).toEqual({
 				mnemonic: mockMnemonic,
@@ -225,17 +215,11 @@ describe('core -> index', () => {
 		it('should throw an error for unsupported algorithms', async () => {
 			const options: GenerateSecretOptions = {
 				seed: { password: 'test password' },
+				version: mockVersion,
 			};
 
 			await expect(
-				generateSecret(
-					'des',
-					mockMnemonic,
-					mockPath,
-					mockKeyName,
-					mockVersion,
-					options,
-				),
+				generateSecret('des', mockMnemonic, mockPath, mockKeyName, options),
 			).rejects.toThrow('Algorithm des not supported.');
 		});
 	});
