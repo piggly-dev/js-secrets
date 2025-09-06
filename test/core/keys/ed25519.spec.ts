@@ -5,7 +5,7 @@ import {
 	sign,
 	verify,
 	signFromString,
-} from '@/core/keys/ed25519';
+} from '@/core/keys/ed25519.js';
 
 describe('core -> keys -> ed25519', () => {
 	const seed = Buffer.from('dP35fDThaWnNQSrj2xCqc48HGebEts9y'); // 32 bits
@@ -15,7 +15,7 @@ describe('core -> keys -> ed25519', () => {
 			const shortSeed = Buffer.from('short seed');
 
 			expect(() => generateKeyPair(shortSeed)).toThrow(
-				'Seed must be at least 32 bytes long.'
+				'Seed must be at least 32 bytes long.',
 			);
 		});
 
@@ -79,7 +79,7 @@ describe('core -> keys -> ed25519', () => {
 			const keyPair = generateKeyPair(seed);
 
 			expect(sign(Buffer.from('test message'), keyPair.sk)).toStrictEqual(
-				signFromString('test message', keyPair.sk)
+				signFromString('test message', keyPair.sk),
 			);
 		});
 

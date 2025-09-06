@@ -1,5 +1,5 @@
-import { Transform, Readable } from 'stream';
-import crypto from 'crypto';
+import { Transform, Readable } from 'node:stream';
+import crypto from 'node:crypto';
 import pump from 'pump';
 
 import {
@@ -11,7 +11,7 @@ import {
 	encryptStream,
 	decrypt,
 	decryptStream,
-} from '@/core/secrets/aes256';
+} from '@/core/secrets/aes256.js';
 
 describe('core -> secrets -> aes256', () => {
 	const seed = crypto.randomBytes(64); // master key
@@ -39,13 +39,13 @@ describe('core -> secrets -> aes256', () => {
 	describe('prepareSecret', () => {
 		it('should throw an error if the secret is not 32 bytes long', () => {
 			expect(() => prepareSecret(Buffer.from('short secret'))).toThrow(
-				'Secret must be at least 32 bytes long.'
+				'Secret must be at least 32 bytes long.',
 			);
 		});
 
 		it('should throw an error if any of the keys are not 32 bytes long', () => {
 			expect(() => prepareSecret(seed, [Buffer.from('short key')])).toThrow(
-				'Keys must be at least 32 bytes long.'
+				'Keys must be at least 32 bytes long.',
 			);
 		});
 
@@ -86,13 +86,13 @@ describe('core -> secrets -> aes256', () => {
 
 		it('should throw an error if the secret is not 32 bytes long', () => {
 			expect(() => decrypt(Buffer.from('short secret'), Buffer.from(''))).toThrow(
-				'Secret must be at least 32 bytes long.'
+				'Secret must be at least 32 bytes long.',
 			);
 		});
 
 		it('should throw an error if any of the keys are not 32 bytes long', () => {
 			expect(() =>
-				decrypt(seed, Buffer.from(''), [Buffer.from('short key')])
+				decrypt(seed, Buffer.from(''), [Buffer.from('short key')]),
 			).toThrow('Keys must be at least 32 bytes long.');
 		});
 	});
@@ -111,7 +111,7 @@ describe('core -> secrets -> aes256', () => {
 					const encrypted = Buffer.concat(chunks);
 					expect(encrypted.length).toBeGreaterThan(16); // IV + encrypted message
 					expect(encrypted.subarray(0, 16)).not.toStrictEqual(
-						message.subarray(0, 16)
+						message.subarray(0, 16),
 					); // IV cannot be the same as the message
 					expect(encrypted.subarray(16)).not.toStrictEqual(message); // Encrypted message cannot be the same as the message
 					done();
@@ -151,7 +151,7 @@ describe('core -> secrets -> aes256', () => {
 						}
 
 						return resolve();
-					}
+					},
 				);
 			});
 
@@ -162,7 +162,7 @@ describe('core -> secrets -> aes256', () => {
 			expect(encrypted.length).toBeGreaterThan(16);
 			// IV cannot be the same as the message
 			expect(encrypted.subarray(0, 16)).not.toStrictEqual(
-				content.subarray(0, 16)
+				content.subarray(0, 16),
 			);
 			// Encrypted message cannot be the same as the message
 			expect(encrypted.subarray(16)).not.toStrictEqual(content);
@@ -215,7 +215,7 @@ describe('core -> secrets -> aes256', () => {
 						}
 
 						return resolve();
-					}
+					},
 				);
 			});
 
@@ -238,7 +238,7 @@ describe('core -> secrets -> aes256', () => {
 						}
 
 						return resolve();
-					}
+					},
 				);
 			});
 

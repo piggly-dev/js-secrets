@@ -1,8 +1,8 @@
 import { wordlists, mnemonicToSeed, generateMnemonic } from 'bip39';
-import { pathToFileURL, fileURLToPath } from 'url';
+import { pathToFileURL, fileURLToPath } from 'node:url';
 import slugify from 'slugify';
 import crypto from 'crypto';
-import path from 'path';
+import path from 'node:path';
 
 import {
 	bufferToHex,
@@ -16,7 +16,7 @@ import {
 	splitWords,
 	stringToBuffer,
 	supportsMnemonicLanguage,
-} from '@/utils';
+} from '@/utils/index.js';
 
 jest.mock('bip39', () => ({
 	wordlists: { english: ['word1', 'word2'] },
@@ -70,7 +70,7 @@ describe('utils -> index', () => {
 
 		it('should throw an error for unsupported language', () => {
 			expect(() => mnemonic({ language: 'unsupported' } as any)).toThrow(
-				'Language unsupported not supported.'
+				'Language unsupported not supported.',
 			);
 		});
 
@@ -81,7 +81,7 @@ describe('utils -> index', () => {
 			expect(generateMnemonic).toHaveBeenCalledWith(
 				undefined,
 				undefined,
-				wordlists.english
+				wordlists.english,
 			);
 		});
 	});
@@ -171,7 +171,7 @@ describe('utils -> index', () => {
 	describe('parseAbspath', () => {
 		it('should throw an error if path is not absolute', () => {
 			expect(() => parseAbspath('relative/path')).toThrow(
-				'Path is required and must be absolute.'
+				'Path is required and must be absolute.',
 			);
 		});
 
@@ -191,7 +191,7 @@ describe('utils -> index', () => {
 				path.dirname('/current/path'),
 				'..',
 				'..',
-				'keys'
+				'keys',
 			);
 		});
 	});

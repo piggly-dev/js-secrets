@@ -4,12 +4,12 @@ import { Command } from 'commander';
 import {
 	generateEd25519KeyPairCommand,
 	recoverEd25519KeyPairCommand,
-} from '@/bin/commands/keys/ed25519';
+} from '@/bin/commands/keys/ed25519.js';
 import {
 	generateAES256SecretCommand,
 	recoverAES256SecretCommand,
-} from '@/bin/commands/secrets/aes256';
-import { generateMnemonic } from '@/bin/commands/mnemonic';
+} from '@/bin/commands/secrets/aes256.js';
+import { generateMnemonic } from '@/bin/commands/mnemonic.js';
 
 const program = new Command();
 

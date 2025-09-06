@@ -1,35 +1,23 @@
-import path from 'path';
+import path from 'node:path';
 
-import { VersionedKey, VersionedKeyPair } from '@/types';
-import { readFile, writeFile } from '@/utils/file';
-
-export async function write(
-	type: 'secrets' | 'keypairs',
-	abspath: string,
-	index_name: string,
-	indexes: Array<VersionedKey | VersionedKeyPair> = []
-): Promise<string> {
-	return writeFile(
-		path.join(abspath, `${index_name}.index.${type}.json`),
-		JSON.stringify(indexes)
-	);
-}
+import { VersionedKeyPair, VersionedKey } from '@/types/index.js';
+import { writeFile, readFile } from '@/utils/file.js';
 
 export async function readAll<Index = VersionedKey>(
-	type: 'secrets' | 'keypairs',
+	type: 'keypairs' | 'secrets',
 	abspath: string,
-	index_name: string
+	index_name: string,
 ): Promise<Array<Index>> {
 	const indexes: Array<Index> = [];
 
 	try {
 		const data = await readFile(
-			path.join(abspath, `${index_name}.index.${type}.json`)
+			path.join(abspath, `${index_name}.index.${type}.json`),
 		);
 
 		const parsed: Array<Index> = JSON.parse(data.toString());
 		parsed.forEach(v => indexes.push(v));
-	} catch (err) {
+	} catch {
 		// do nothing
 	}
 
@@ -37,11 +25,11 @@ export async function readAll<Index = VersionedKey>(
 }
 
 export async function readKey<Index extends { version: number }>(
-	type: 'secrets' | 'keypairs',
+	type: 'keypairs' | 'secrets',
 	abspath: string,
 	index_name: string,
-	version: number
-): Promise<Index | undefined> {
+	version: number,
+): Promise<undefined | Index> {
 	const indexes = await readAll<Index>(type, abspath, index_name);
 	const key = indexes.find(v => v.version === version);
 
@@ -53,10 +41,10 @@ export async function readKey<Index extends { version: number }>(
 }
 
 export async function remove(
-	type: 'secrets' | 'keypairs',
+	type: 'keypairs' | 'secrets',
 	abspath: string,
 	index_name: string,
-	version: number
+	version: number,
 ): Promise<string> {
 	const indexes = await readAll<{ version: number }>(type, abspath, index_name);
 
@@ -76,7 +64,19 @@ export async function remove(
 
 export function versionExists(
 	indexes: Array<{ version: number }>,
-	version: number
+	version: number,
 ): boolean {
 	return indexes.some(v => v.version === version);
+}
+
+export async function write(
+	type: 'keypairs' | 'secrets',
+	abspath: string,
+	index_name: string,
+	indexes: Array<VersionedKeyPair | VersionedKey> = [],
+): Promise<string> {
+	return writeFile(
+		path.join(abspath, `${index_name}.index.${type}.json`),
+		JSON.stringify(indexes),
+	);
 }

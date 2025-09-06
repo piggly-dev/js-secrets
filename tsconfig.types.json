@@ -1,7 +1,7 @@
 {
 	"compilerOptions": {
-		"target": "ESNext",
-		"module": "ESNext",
+		"target": "esnext",
+		"module": "esnext",
 		"strict": true,
 		"declaration": true,
 		"emitDeclarationOnly": true,
@@ -10,7 +10,7 @@
 		"noUnusedParameters": false,
 		"importHelpers": true,
 		"isolatedModules": true,
-		"moduleResolution": "Node",
+		"moduleResolution": "bundler",
 		"experimentalDecorators": true,
 		"esModuleInterop": true,
 		"allowSyntheticDefaultImports": true,
@@ -33,7 +33,7 @@
 		"types": ["node"]
 	},
 	"include": ["./src/**/*"],
-	"exclude": ["./node_modules/**/*", "./build/**/*", "./dist/**/*", "./test/**/*"],
+	"exclude": ["./node_modules/**/*", "./dist/**/*", "./test/**/*"],
 	"tsc-alias": {
 		"resolveFullPaths": true,
 		"verbose": true

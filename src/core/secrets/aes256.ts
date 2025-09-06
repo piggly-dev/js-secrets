@@ -1,9 +1,5 @@
-import { Transform, TransformCallback } from 'stream';
-import crypto from 'crypto';
-
-export function generateSecret(seed: Buffer): Buffer {
-	return crypto.createHash('sha256').update(seed).digest();
-}
+import { TransformCallback, Transform } from 'node:stream';
+import crypto from 'node:crypto';
 
 export function concatSecrets(secrets: Array<Buffer>): Buffer {
 	return crypto
@@ -13,71 +9,10 @@ export function concatSecrets(secrets: Array<Buffer>): Buffer {
 		.subarray(0, 32);
 }
 
-export function prepareSecret(secret: Buffer, keys: Array<Buffer> = []) {
-	if (secret.length < 32) {
-		throw Error('Secret must be at least 32 bytes long.');
-	}
-
-	if (keys.length > 0 && keys.some(key => key.length < 32)) {
-		throw Error('Keys must be at least 32 bytes long.');
-	}
-
-	return concatSecrets([secret, ...keys]);
-}
-
-export function prepareEncryption(
-	secret: Buffer,
-	keys: Array<Buffer> = []
-): { sk: Buffer; iv: Buffer; cipher: crypto.Cipher } {
-	const sk = prepareSecret(secret, keys);
-	const iv = crypto.randomBytes(16);
-	const cipher = crypto.createCipheriv('aes-256-ctr', sk, iv);
-
-	return { sk, iv, cipher };
-}
-
-export function encrypt(
-	secret: Buffer,
-	message: Buffer,
-	keys: Array<Buffer> = []
-): Buffer {
-	const { iv, cipher } = prepareEncryption(secret, keys);
-	const encrypted = Buffer.concat([cipher.update(message), cipher.final()]);
-
-	return Buffer.concat([iv, encrypted]);
-}
-
-export function encryptStream(secret: Buffer, keys: Array<Buffer> = []): Transform {
-	const { iv, cipher } = prepareEncryption(secret, keys);
-	let ivPushed = false;
-
-	const transform = new Transform({
-		transform(
-			this: Transform,
-			chunk: any,
-			encoding: BufferEncoding,
-			callback: TransformCallback
-		): void {
-			if (!ivPushed) {
-				this.push(iv);
-				ivPushed = true;
-			}
-			this.push(cipher.update(chunk));
-			callback();
-		},
-		flush(callback) {
-			this.push(cipher.final());
-			callback();
-		},
-	});
-
-	return transform;
-}
-
 export function decrypt(
 	secret: Buffer,
 	message: Buffer,
-	keys: Array<Buffer> = []
+	keys: Array<Buffer> = [],
 ): Buffer {
 	if (secret.length < 32) {
 		throw Error('Secret must be at least 32 bytes long.');
@@ -101,9 +36,17 @@ export function decryptStream(secret: Buffer, keys: Array<Buffer> = []): Transfo
 	const sk = prepareSecret(secret, keys);
 
 	let iv: Buffer | null = null;
-	let decipher: crypto.Decipher | null = null;
+	let decipher: crypto.Decipheriv | null = null;
 
 	const transform = new Transform({
+		flush(callback) {
+			if (decipher) {
+				callback(null, decipher.final());
+				return;
+			}
+
+			callback();
+		},
 		transform(chunk, encoding, callback) {
 			if (!iv) {
 				iv = chunk.slice(0, 16);
@@ -116,15 +59,72 @@ export function decryptStream(secret: Buffer, keys: Array<Buffer> = []): Transfo
 				callback(null, decipher.update(chunk));
 			}
 		},
-		flush(callback) {
-			if (decipher) {
-				callback(null, decipher.final());
-				return;
-			}
+	});
 
+	return transform;
+}
+
+export function encrypt(
+	secret: Buffer,
+	message: Buffer,
+	keys: Array<Buffer> = [],
+): Buffer {
+	const { cipher, iv } = prepareEncryption(secret, keys);
+	const encrypted = Buffer.concat([cipher.update(message), cipher.final()]);
+
+	return Buffer.concat([iv, encrypted]);
+}
+
+export function encryptStream(secret: Buffer, keys: Array<Buffer> = []): Transform {
+	const { cipher, iv } = prepareEncryption(secret, keys);
+	let ivPushed = false;
+
+	const transform = new Transform({
+		flush(callback) {
+			this.push(cipher.final());
+			callback();
+		},
+		transform(
+			this: Transform,
+			chunk: any,
+			encoding: BufferEncoding,
+			callback: TransformCallback,
+		): void {
+			if (!ivPushed) {
+				this.push(iv);
+				ivPushed = true;
+			}
+			this.push(cipher.update(chunk));
 			callback();
 		},
 	});
 
 	return transform;
+}
+
+export function generateSecret(seed: Buffer): Buffer {
+	return crypto.createHash('sha256').update(seed).digest();
+}
+
+export function prepareEncryption(
+	secret: Buffer,
+	keys: Array<Buffer> = [],
+): { cipher: crypto.Cipheriv; iv: Buffer; sk: Buffer } {
+	const sk = prepareSecret(secret, keys);
+	const iv = crypto.randomBytes(16);
+	const cipher = crypto.createCipheriv('aes-256-ctr', sk, iv);
+
+	return { cipher, iv, sk };
+}
+
+export function prepareSecret(secret: Buffer, keys: Array<Buffer> = []) {
+	if (secret.length < 32) {
+		throw Error('Secret must be at least 32 bytes long.');
+	}
+
+	if (keys.length > 0 && keys.some(key => key.length < 32)) {
+		throw Error('Keys must be at least 32 bytes long.');
+	}
+
+	return concatSecrets([secret, ...keys]);
 }

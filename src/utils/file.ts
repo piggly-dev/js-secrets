@@ -1,4 +1,4 @@
-import fs from 'fs';
+import fs from 'node:fs';
 
 export function createPath(abspath: string) {
 	if (fs.existsSync(abspath) === false) {
@@ -22,14 +22,11 @@ export async function readFile(filename: string): Promise<Buffer> {
 	});
 }
 
-export async function writeFile(
-	filename: string,
-	data: Buffer | string
-): Promise<string> {
-	return new Promise<string>((res, rej) => {
-		fs.writeFile(filename, data, err => {
+export async function removeFile(filename: string): Promise<string> {
+	return new Promise<string>(res => {
+		fs.unlink(filename, err => {
 			if (err) {
-				return rej(err);
+				return res(filename);
 			}
 
 			return res(filename);
@@ -37,11 +34,14 @@ export async function writeFile(
 	});
 }
 
-export async function removeFile(filename: string): Promise<string> {
-	return new Promise<string>(res => {
-		fs.unlink(filename, err => {
+export async function writeFile(
+	filename: string,
+	data: Buffer | string,
+): Promise<string> {
+	return new Promise<string>((res, rej) => {
+		fs.writeFile(filename, data, err => {
 			if (err) {
-				return res(filename);
+				return rej(err);
 			}
 
 			return res(filename);

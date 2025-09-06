@@ -1,9 +1,9 @@
-import path from 'path';
-import fs from 'fs';
+import path from 'node:path';
+import fs from 'node:fs';
 
-import { KeyPairManagerService } from '@/core/services/KeyPairManagerService';
-import { VersionedKeyPair } from '@/types';
-import { readAll } from '@/utils/indexes';
+import { KeyPairManagerService } from '@/core/services/KeyPairManagerService.js';
+import { VersionedKeyPair } from '@/types/index.js';
+import { readAll } from '@/utils/indexes.js';
 
 jest.mock('fs');
 jest.mock('@/utils/indexes', () => ({
@@ -46,10 +46,10 @@ describe('core -> services -> KeyPairManagerService', () => {
 
 			expect(result).toBe(true);
 			expect(fs.readFileSync).toHaveBeenCalledWith(
-				path.join(mockPath, `${mockName}.sk.key`)
+				path.join(mockPath, `${mockName}.sk.key`),
 			);
 			expect(fs.readFileSync).toHaveBeenCalledWith(
-				path.join(mockPath, `${mockName}.pk.key`)
+				path.join(mockPath, `${mockName}.pk.key`),
 			);
 			expect(keyPairManager.raw.get(1)).toEqual({
 				sk: mockSecretKey,
@@ -104,7 +104,7 @@ describe('core -> services -> KeyPairManagerService', () => {
 
 		it('should throw an error if the key pair is not found', () => {
 			expect(() => keyPairManager.get(10)).toThrow(
-				'Key/secret version 10 not found for testKeyPair.'
+				'Key/secret version 10 not found for testKeyPair.',
 			);
 		});
 
@@ -119,7 +119,7 @@ describe('core -> services -> KeyPairManagerService', () => {
 
 		it('should throw an error if the versioned key pair is not found', () => {
 			expect(() => keyPairManager.get(2)).toThrow(
-				`Key/secret version 2 not found for testKeyPair.`
+				`Key/secret version 2 not found for testKeyPair.`,
 			);
 		});
 	});

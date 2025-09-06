@@ -1,13 +1,29 @@
-import { wordlists, mnemonicToSeed, generateMnemonic } from 'bip39';
-import { fileURLToPath } from 'url';
+import { fileURLToPath } from 'node:url';
+import crypto from 'node:crypto';
+import path from 'node:path';
+
+import { generateMnemonic, mnemonicToSeed, wordlists } from 'bip39';
 import slugify from 'slugify';
-import crypto from 'crypto';
-import path from 'path';
 
-import { GenerateMnemonicOptions, GenerateMnemonicSeedOptions } from '@/types';
+import {
+	GenerateMnemonicSeedOptions,
+	GenerateMnemonicOptions,
+} from '@/types/index.js';
 
-export function supportsMnemonicLanguage(language: string): boolean {
-	return Object.keys(wordlists).includes(language);
+export function bufferToHex(buffer: Buffer) {
+	return buffer.toString('hex');
+}
+
+export function bufferToString(buffer: Buffer) {
+	return buffer.toString();
+}
+
+export function cutBuffer(buffer: Buffer, length: number): Buffer {
+	return buffer.subarray(0, length);
+}
+
+export function hash(algorithm: string, message: string): Buffer {
+	return crypto.createHash(algorithm).update(message).digest();
 }
 
 export function mnemonic(options: GenerateMnemonicOptions = {}): string {
@@ -24,31 +40,31 @@ export function mnemonic(options: GenerateMnemonicOptions = {}): string {
 	return generateMnemonic(options.strength, options.rng, wordslist);
 }
 
+export function parseAbspath(abspath?: string): string {
+	if (abspath && abspath.startsWith('/') === false) {
+		throw new Error('Path is required and must be absolute.');
+	}
+
+	return (
+		abspath ??
+		path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..', 'keys')
+	);
+}
+
+export function parseFileName(file: string): string {
+	return slugify.default(file, {
+		lower: true,
+		remove: /[*+~.()'"!:@]/g,
+		replacement: '_',
+		strict: true,
+	});
+}
+
 export async function seed(
 	mnemonic: string,
-	options: GenerateMnemonicSeedOptions = {}
+	options: GenerateMnemonicSeedOptions = {},
 ): Promise<Buffer> {
 	return mnemonicToSeed(mnemonic, options.password);
-}
-
-export function hash(algorithm: string, message: string): Buffer {
-	return crypto.createHash(algorithm).update(message).digest();
-}
-
-export function cutBuffer(buffer: Buffer, length: number): Buffer {
-	return buffer.subarray(0, length);
-}
-
-export function bufferToHex(buffer: Buffer) {
-	return buffer.toString('hex');
-}
-
-export function bufferToString(buffer: Buffer) {
-	return buffer.toString();
-}
-
-export function stringToBuffer(message: string) {
-	return Buffer.from(message);
 }
 
 export function splitWords(input: string, chunkSize = 6): Array<Array<string>> {
@@ -63,22 +79,10 @@ export function splitWords(input: string, chunkSize = 6): Array<Array<string>> {
 	return result;
 }
 
-export function parseFileName(file: string): string {
-	return slugify(file, {
-		replacement: '_',
-		remove: /[*+~.()'"!:@]/g,
-		lower: true,
-		strict: true,
-	});
+export function stringToBuffer(message: string) {
+	return Buffer.from(message);
 }
 
-export function parseAbspath(abspath?: string): string {
-	if (abspath && abspath.startsWith('/') === false) {
-		throw new Error('Path is required and must be absolute.');
-	}
-
-	return (
-		abspath ??
-		path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..', 'keys')
-	);
+export function supportsMnemonicLanguage(language: string): boolean {
+	return Object.keys(wordlists).includes(language);
 }

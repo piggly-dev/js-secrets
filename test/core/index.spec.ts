@@ -4,12 +4,12 @@ import {
 	recoverKeyPair,
 	supportsEncryptAlgorithm,
 	generateSecret,
-} from '@/core';
-import { GenerateKeyPairOptions, GenerateSecretOptions } from '@/types';
-import { keyPairsToFile, secretToFile } from '@/utils/keys';
-import * as ed25519 from '@/core/keys/ed25519';
-import * as aes from '@/core/secrets/aes256';
-import { mnemonic, seed } from '@/utils';
+} from '@/core/index.js';
+import { GenerateKeyPairOptions, GenerateSecretOptions } from '@/types/index.js';
+import { keyPairsToFile, secretToFile } from '@/utils/keys.js';
+import * as ed25519 from '@/core/keys/ed25519.js';
+import * as aes from '@/core/secrets/aes256.js';
+import { mnemonic, seed } from '@/utils/index.js';
 
 jest.mock('@/utils/keys', () => ({
 	keyPairsToFile: jest.fn(),
@@ -84,7 +84,7 @@ describe('core -> index', () => {
 				mockPath,
 				mockKeyName,
 				mockVersion,
-				options
+				options,
 			);
 
 			expect(mnemonic).toHaveBeenCalledWith(options.mnemonic);
@@ -95,7 +95,7 @@ describe('core -> index', () => {
 				mockKeyName,
 				mockVersion,
 				mockKeys,
-				undefined
+				undefined,
 			);
 			expect(result).toEqual({
 				mnemonic: mockMnemonic,
@@ -116,7 +116,7 @@ describe('core -> index', () => {
 			};
 
 			await expect(
-				generateKeyPair('rsa', mockPath, mockKeyName, mockVersion, options)
+				generateKeyPair('rsa', mockPath, mockKeyName, mockVersion, options),
 			).rejects.toThrow('Algorithm rsa not supported.');
 		});
 	});
@@ -133,7 +133,7 @@ describe('core -> index', () => {
 				mockPath,
 				mockKeyName,
 				mockVersion,
-				options
+				options,
 			);
 
 			expect(seed).toHaveBeenCalledWith(mockMnemonic, options.seed);
@@ -144,7 +144,7 @@ describe('core -> index', () => {
 				mockVersion,
 				mockKeys,
 				undefined,
-				true
+				true,
 			);
 			expect(result).toEqual({
 				mnemonic: mockMnemonic,
@@ -170,8 +170,8 @@ describe('core -> index', () => {
 					mockPath,
 					mockKeyName,
 					mockVersion,
-					options
-				)
+					options,
+				),
 			).rejects.toThrow('Algorithm rsa not supported.');
 		});
 	});
@@ -198,7 +198,7 @@ describe('core -> index', () => {
 				mockPath,
 				mockKeyName,
 				mockVersion,
-				options
+				options,
 			);
 
 			expect(seed).toHaveBeenCalledWith(mockMnemonic, options.seed);
@@ -209,7 +209,7 @@ describe('core -> index', () => {
 				mockVersion,
 				mockSecret,
 				undefined,
-				false
+				false,
 			);
 			expect(result).toEqual({
 				mnemonic: mockMnemonic,
@@ -234,8 +234,8 @@ describe('core -> index', () => {
 					mockPath,
 					mockKeyName,
 					mockVersion,
-					options
-				)
+					options,
+				),
 			).rejects.toThrow('Algorithm des not supported.');
 		});
 	});

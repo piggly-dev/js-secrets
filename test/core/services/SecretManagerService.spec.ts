@@ -1,9 +1,9 @@
-import path from 'path';
-import fs from 'fs';
+import path from 'node:path';
+import fs from 'node:fs';
 
-import { SecretManagerService } from '@/core/services/SecretManagerService';
-import { readAll } from '@/utils/indexes';
-import { VersionedKey } from '@/types';
+import { SecretManagerService } from '@/core/services/SecretManagerService.js';
+import { readAll } from '@/utils/indexes.js';
+import { VersionedKey } from '@/types/index.js';
 
 jest.mock('fs');
 jest.mock('@/utils/indexes', () => ({
@@ -36,7 +36,7 @@ describe('core -> services -> SecretManagerService', () => {
 
 			expect(result).toBe(true);
 			expect(fs.readFileSync).toHaveBeenCalledWith(
-				path.join(mockPath, `${mockName}.secret.key`)
+				path.join(mockPath, `${mockName}.secret.key`),
 			);
 			expect(secretManager.raw.get(1)).toEqual(mockSecret);
 		});
@@ -68,7 +68,7 @@ describe('core -> services -> SecretManagerService', () => {
 
 		it('should throw an error if the secret is not found', async () => {
 			expect(() => secretManager.get(10)).toThrow(
-				'Key/secret version 10 not found for testSecret.'
+				'Key/secret version 10 not found for testSecret.',
 			);
 		});
 
@@ -83,7 +83,7 @@ describe('core -> services -> SecretManagerService', () => {
 
 		it('should throw an error if the versioned secret is not found', async () => {
 			expect(() => secretManager.get(2)).toThrow(
-				`Key/secret version 2 not found for testSecret.`
+				`Key/secret version 2 not found for testSecret.`,
 			);
 		});
 	});

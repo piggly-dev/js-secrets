@@ -1,8 +1,8 @@
-import path from 'path';
+import path from 'node:path';
 
-import { write, readAll, readKey, remove, versionExists } from '@/utils/indexes';
-import { readFile, writeFile } from '@/utils/file';
-import { VersionedKey } from '@/types';
+import { write, readAll, readKey, remove, versionExists } from '@/utils/indexes.js';
+import { readFile, writeFile } from '@/utils/file.js';
+import { VersionedKey } from '@/types/index.js';
 
 jest.mock('@/utils/file', () => ({
 	readFile: jest.fn(),
@@ -28,7 +28,7 @@ describe('Index Functions', () => {
 
 			expect(writeFileMock).toHaveBeenCalledWith(
 				path.join(mockPath, `${indexName}.index.secrets.json`),
-				JSON.stringify(indexes)
+				JSON.stringify(indexes),
 			);
 		});
 	});
@@ -45,7 +45,7 @@ describe('Index Functions', () => {
 
 			expect(result).toEqual(indexes);
 			expect(readFileMock).toHaveBeenCalledWith(
-				path.join(mockPath, `${indexName}.index.secrets.json`)
+				path.join(mockPath, `${indexName}.index.secrets.json`),
 			);
 		});
 
@@ -71,7 +71,7 @@ describe('Index Functions', () => {
 				'secrets',
 				mockPath,
 				indexName,
-				1
+				1,
 			);
 
 			expect(result).toEqual(indexes[0]);
@@ -85,7 +85,7 @@ describe('Index Functions', () => {
 			readFileMock.mockResolvedValueOnce(JSON.stringify(indexes));
 
 			await expect(
-				readKey<VersionedKey>('secrets', mockPath, indexName, 2)
+				readKey<VersionedKey>('secrets', mockPath, indexName, 2),
 			).rejects.toThrow('Version 2 not found.');
 		});
 	});
@@ -103,7 +103,7 @@ describe('Index Functions', () => {
 
 			expect(writeFileMock).toHaveBeenCalledWith(
 				path.join(mockPath, `${indexName}.index.secrets.json`),
-				JSON.stringify([])
+				JSON.stringify([]),
 			);
 		});
 
@@ -115,7 +115,7 @@ describe('Index Functions', () => {
 			readFileMock.mockResolvedValueOnce(JSON.stringify(indexes));
 
 			await expect(remove('secrets', mockPath, indexName, 2)).rejects.toThrow(
-				'Version 2 not found.'
+				'Version 2 not found.',
 			);
 		});
 	});

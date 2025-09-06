@@ -1,9 +1,9 @@
-import path from 'path';
+import path from 'node:path';
 
-import { createPath, exists, removeFile, writeFile } from '@/utils/file';
-import { readAll, versionExists, write } from '@/utils/indexes';
-import { secretToFile, keyPairsToFile } from '@/utils/keys';
-import { VersionedKey, VersionedKeyPair } from '@/types';
+import { createPath, exists, removeFile, writeFile } from '@/utils/file.js';
+import { readAll, versionExists, write } from '@/utils/indexes.js';
+import { secretToFile, keyPairsToFile } from '@/utils/keys.js';
+import { VersionedKey, VersionedKeyPair } from '@/types/index.js';
 
 jest.mock('@/utils/file', () => ({
 	createPath: jest.fn(),
@@ -39,11 +39,11 @@ describe('utils -> keys', () => {
 
 			expect(createPath).toHaveBeenCalledWith(mockPath);
 			expect(exists).toHaveBeenCalledWith(
-				path.join(mockPath, 'testSecret.secret.key')
+				path.join(mockPath, 'testSecret.secret.key'),
 			);
 			expect(writeFile).toHaveBeenCalledWith(
 				path.join(mockPath, 'testSecret.secret.key'),
-				secret
+				secret,
 			);
 			expect(result).toEqual({
 				file: '/mock/path/testSecret.secret.key',
@@ -57,7 +57,7 @@ describe('utils -> keys', () => {
 			existsMock.mockReturnValue(true);
 
 			await expect(
-				secretToFile(mockPath, 'testSecret', 1, Buffer.from('secret data'))
+				secretToFile(mockPath, 'testSecret', 1, Buffer.from('secret data')),
 			).rejects.toThrow('Key testSecret already exists.');
 		});
 
@@ -72,7 +72,7 @@ describe('utils -> keys', () => {
 			await secretToFile(mockPath, 'testSecret', 1, secret, undefined, true);
 
 			expect(removeFile).toHaveBeenCalledWith(
-				path.join(mockPath, 'testSecret.secret.key')
+				path.join(mockPath, 'testSecret.secret.key'),
 			);
 		});
 
@@ -97,11 +97,11 @@ describe('utils -> keys', () => {
 				1,
 				secret,
 				indexName,
-				false
+				false,
 			);
 
 			expect(exists).toHaveBeenCalledWith(
-				path.join(mockPath, 'testSecret.secret.key')
+				path.join(mockPath, 'testSecret.secret.key'),
 			);
 			expect(readAll).toHaveBeenCalledWith('secrets', mockPath, indexName);
 			expect(versionExists).toHaveBeenCalledWith(indexes, 1);
@@ -132,7 +132,7 @@ describe('utils -> keys', () => {
 			versionExistsMock.mockReturnValue(true);
 
 			await expect(
-				secretToFile(mockPath, 'testSecret', 1, secret, indexName)
+				secretToFile(mockPath, 'testSecret', 1, secret, indexName),
 			).rejects.toThrow('Version 1 already exists.');
 		});
 
@@ -145,7 +145,7 @@ describe('utils -> keys', () => {
 			writeFileMock.mockRejectedValue(new Error('Failed to write file.'));
 
 			await expect(
-				secretToFile(mockPath, 'testSecret', 1, secret)
+				secretToFile(mockPath, 'testSecret', 1, secret),
 			).rejects.toThrow('Failed to write file.');
 		});
 
@@ -165,7 +165,7 @@ describe('utils -> keys', () => {
 			writeMock.mockRejectedValue(new Error('Failed to write index file.'));
 
 			await expect(
-				secretToFile(mockPath, 'testSecret', 1, secret, indexName)
+				secretToFile(mockPath, 'testSecret', 1, secret, indexName),
 			).rejects.toThrow('Failed to write index file.');
 		});
 	});
@@ -185,18 +185,18 @@ describe('utils -> keys', () => {
 
 			expect(createPath).toHaveBeenCalledWith(mockPath);
 			expect(exists).toHaveBeenCalledWith(
-				path.join(mockPath, 'testKeyPair.sk.key')
+				path.join(mockPath, 'testKeyPair.sk.key'),
 			);
 			expect(exists).toHaveBeenCalledWith(
-				path.join(mockPath, 'testKeyPair.pk.key')
+				path.join(mockPath, 'testKeyPair.pk.key'),
 			);
 			expect(writeFile).toHaveBeenCalledWith(
 				path.join(mockPath, 'testKeyPair.sk.key'),
-				keys.sk
+				keys.sk,
 			);
 			expect(writeFile).toHaveBeenCalledWith(
 				path.join(mockPath, 'testKeyPair.pk.key'),
-				keys.pk
+				keys.pk,
 			);
 			expect(result).toEqual({
 				sk: '/mock/path/testKeyPair.sk.key',
@@ -214,7 +214,7 @@ describe('utils -> keys', () => {
 				keyPairsToFile(mockPath, 'testKeyPair', 1, {
 					sk: Buffer.from('secret key'),
 					pk: Buffer.from('public key'),
-				})
+				}),
 			).rejects.toThrow('Key testKeyPair already exists.');
 		});
 
@@ -231,10 +231,10 @@ describe('utils -> keys', () => {
 			await keyPairsToFile(mockPath, 'testKeyPair', 1, keys, undefined, true);
 
 			expect(removeFile).toHaveBeenCalledWith(
-				path.join(mockPath, 'testKeyPair.sk.key')
+				path.join(mockPath, 'testKeyPair.sk.key'),
 			);
 			expect(removeFile).toHaveBeenCalledWith(
-				path.join(mockPath, 'testKeyPair.pk.key')
+				path.join(mockPath, 'testKeyPair.pk.key'),
 			);
 		});
 
@@ -261,14 +261,14 @@ describe('utils -> keys', () => {
 				1,
 				keys,
 				indexName,
-				false
+				false,
 			);
 
 			expect(exists).toHaveBeenCalledWith(
-				path.join(mockPath, 'testKeyPair.sk.key')
+				path.join(mockPath, 'testKeyPair.sk.key'),
 			);
 			expect(exists).toHaveBeenCalledWith(
-				path.join(mockPath, 'testKeyPair.pk.key')
+				path.join(mockPath, 'testKeyPair.pk.key'),
 			);
 			expect(readAll).toHaveBeenCalledWith('keypairs', mockPath, indexName);
 			expect(versionExists).toHaveBeenCalledWith(indexes, 1);
@@ -304,7 +304,7 @@ describe('utils -> keys', () => {
 			versionExistsMock.mockReturnValue(true);
 
 			await expect(
-				keyPairsToFile(mockPath, 'testSecret', 1, keys, indexName)
+				keyPairsToFile(mockPath, 'testSecret', 1, keys, indexName),
 			).rejects.toThrow('Version 1 already exists.');
 		});
 
@@ -320,7 +320,7 @@ describe('utils -> keys', () => {
 			writeFileMock.mockRejectedValue(new Error('Failed to write file.'));
 
 			await expect(
-				keyPairsToFile(mockPath, 'testSecret', 1, keys)
+				keyPairsToFile(mockPath, 'testSecret', 1, keys),
 			).rejects.toThrow('Failed to write file.');
 		});
 
@@ -343,7 +343,7 @@ describe('utils -> keys', () => {
 			writeMock.mockRejectedValue(new Error('Failed to write index file.'));
 
 			await expect(
-				keyPairsToFile(mockPath, 'testSecret', 1, keys, indexName)
+				keyPairsToFile(mockPath, 'testSecret', 1, keys, indexName),
 			).rejects.toThrow('Failed to write index file.');
 		});
 	});

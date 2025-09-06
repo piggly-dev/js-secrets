@@ -1,6 +1,12 @@
-import fs from 'fs';
+import fs from 'node:fs';
 
-import { createPath, exists, readFile, writeFile, removeFile } from '@/utils/file';
+import {
+	createPath,
+	exists,
+	readFile,
+	writeFile,
+	removeFile,
+} from '@/utils/file.js';
 
 jest.mock('fs', () => ({
 	existsSync: jest.fn(),
@@ -69,7 +75,7 @@ describe('utils -> file', () => {
 			expect(data).toBe(fakeData);
 			expect(readFileMocked).toHaveBeenCalledWith(
 				'/fake/file',
-				expect.any(Function)
+				expect.any(Function),
 			);
 		});
 
@@ -82,7 +88,7 @@ describe('utils -> file', () => {
 			await expect(readFile('/fake/file')).rejects.toThrow('read error');
 			expect(readFileMocked).toHaveBeenCalledWith(
 				'/fake/file',
-				expect.any(Function)
+				expect.any(Function),
 			);
 		});
 	});
@@ -98,7 +104,7 @@ describe('utils -> file', () => {
 			expect(writeFileMocked).toHaveBeenCalledWith(
 				'/fake/file',
 				'fake data',
-				expect.any(Function)
+				expect.any(Function),
 			);
 		});
 
@@ -109,12 +115,12 @@ describe('utils -> file', () => {
 			});
 
 			await expect(writeFile('/fake/file', 'fake data')).rejects.toThrow(
-				'write error'
+				'write error',
 			);
 			expect(writeFileMocked).toHaveBeenCalledWith(
 				'/fake/file',
 				'fake data',
-				expect.any(Function)
+				expect.any(Function),
 			);
 		});
 	});
@@ -129,7 +135,7 @@ describe('utils -> file', () => {
 			expect(result).toBe('/fake/file');
 			expect(unlinkMocked).toHaveBeenCalledWith(
 				'/fake/file',
-				expect.any(Function)
+				expect.any(Function),
 			);
 		});
 
@@ -143,7 +149,7 @@ describe('utils -> file', () => {
 			expect(result).toBe('/fake/file');
 			expect(unlinkMocked).toHaveBeenCalledWith(
 				'/fake/file',
-				expect.any(Function)
+				expect.any(Function),
 			);
 		});
 	});

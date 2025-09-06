@@ -1,22 +1,23 @@
+/* eslint-disable no-console */
 import { Command } from 'commander';
 import chalk from 'chalk';
 
-import { generateKeyPair, recoverKeyPair } from '@/core';
-import { parseAbspath, parseFileName } from '@/utils';
-import { remove } from '@/utils/indexes';
+import { generateKeyPair, recoverKeyPair } from '@/core/index.js';
+import { parseFileName, parseAbspath } from '@/utils/index.js';
+import { remove } from '@/utils/indexes.js';
 
 export function generateEd25519KeyPairCommand(program: Command) {
 	program
 		.command('generate:ed25519')
 		.description(
-			'Generates a key-pair based on a mnemonic phrase. It will use the ed25519 algorithm.'
+			'Generates a key-pair based on a mnemonic phrase. It will use the ed25519 algorithm.',
 		)
 		.argument('<name>', 'Name of the key.')
 		.argument('<version>', 'Version of the key. Should be an integer.')
 		.option('-p, --path <path>', 'Path to save the key.')
 		.option(
 			'-x, --index <index>',
-			'Index name. Will store the key in a JSON index.'
+			'Index name. Will store the key in a JSON index.',
 		)
 		.option('-w, --password <password>', 'Password for seed generation.')
 		.option('-l, --language <language>', 'Language of mnemonic.', 'english')
@@ -34,14 +35,14 @@ export function generateEd25519KeyPairCommand(program: Command) {
 					version,
 					{
 						mnemonic: {
-							strength: parseInt(op.strength, 10),
 							language: op.language,
+							strength: parseInt(op.strength, 10),
 						},
 						seed: {
 							password: op.password,
 						},
 					},
-					index_name
+					index_name,
 				);
 
 				console.log(chalk.green('Public key generated at:'), generated.files.pk);
@@ -50,7 +51,7 @@ export function generateEd25519KeyPairCommand(program: Command) {
 				if (generated.files.index) {
 					console.log(
 						chalk.green('Key pair indexed at:'),
-						generated.files.index
+						generated.files.index,
 					);
 				}
 
@@ -58,8 +59,8 @@ export function generateEd25519KeyPairCommand(program: Command) {
 
 				console.log(
 					chalk.yellow(
-						'Keep the mnemonic safe! It can be used to recover the key pair.'
-					)
+						'Keep the mnemonic safe! It can be used to recover the key pair.',
+					),
 				);
 			} catch (error: any) {
 				console.error(chalk.red(error.message));
@@ -74,14 +75,14 @@ export function recoverEd25519KeyPairCommand(program: Command) {
 	program
 		.command('recover:ed25519')
 		.description(
-			'Recovers a key-pair from a mnemonic and save it to a file. It will remove the previous key from index when index is set.'
+			'Recovers a key-pair from a mnemonic and save it to a file. It will remove the previous key from index when index is set.',
 		)
 		.argument('<name>', 'Name of the key.')
 		.argument('<version>', 'Version of the key. Should be an integer.')
 		.option('-p, --path <path>', 'Path to save the key.')
 		.option(
 			'-x, --index <index>',
-			'Index name. Will store the key in a JSON index.'
+			'Index name. Will store the key in a JSON index.',
 		)
 		.option('-m, --mnemonic <mnemonic>', 'Mnemonic to recover the key.')
 		.option('-w, --password <password>', 'Password for seed generation.')
@@ -113,7 +114,7 @@ export function recoverEd25519KeyPairCommand(program: Command) {
 							password: op.password,
 						},
 					},
-					index_name
+					index_name,
 				);
 
 				console.log(chalk.green('Public key recovered at:'), generated.files.pk);
@@ -122,7 +123,7 @@ export function recoverEd25519KeyPairCommand(program: Command) {
 				if (generated.files.index) {
 					console.log(
 						chalk.green('Key pair reindexed at:'),
-						generated.files.index
+						generated.files.index,
 					);
 				}
 
@@ -130,8 +131,8 @@ export function recoverEd25519KeyPairCommand(program: Command) {
 
 				console.log(
 					chalk.yellow(
-						'Keep the mnemonic safe! It can be used again to recover the key pair.'
-					)
+						'Keep the mnemonic safe! It can be used again to recover the key pair.',
+					),
 				);
 			} catch (error: any) {
 				console.error(chalk.red(error.message));
