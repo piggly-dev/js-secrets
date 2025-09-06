@@ -3,7 +3,6 @@ import crypto from 'node:crypto';
 import path from 'node:path';
 
 import { generateMnemonic, mnemonicToSeed, wordlists } from 'bip39';
-import slugify from 'slugify';
 
 import {
 	GenerateMnemonicSeedOptions,
@@ -52,12 +51,15 @@ export function parseAbspath(abspath?: string): string {
 }
 
 export function parseFileName(file: string): string {
-	return slugify.default(file, {
-		lower: true,
-		remove: /[*+~.()'"!:@]/g,
-		replacement: '_',
-		strict: true,
-	});
+	const [_filename] = file.split('.');
+
+	return _filename
+		.trim()
+		.toLowerCase()
+		.replace(/[\W\s]/gi, '_')
+		.replace(/_+/g, '_')
+		.replace(/^_+/, '')
+		.replace(/_+$/, '');
 }
 
 export async function seed(

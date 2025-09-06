@@ -1,7 +1,6 @@
 import { wordlists, mnemonicToSeed, generateMnemonic } from 'bip39';
 import { pathToFileURL, fileURLToPath } from 'node:url';
-import slugify from 'slugify';
-import crypto from 'crypto';
+import crypto from 'node:crypto';
 import path from 'node:path';
 
 import {
@@ -24,14 +23,12 @@ jest.mock('bip39', () => ({
 	generateMnemonic: jest.fn(),
 }));
 
-jest.mock('url', () => ({
+jest.mock('node:url', () => ({
 	fileURLToPath: jest.fn(),
 	pathToFileURL: jest.fn(),
 }));
 
-jest.mock('slugify', () => jest.fn());
-
-jest.mock('crypto', () => ({
+jest.mock('node:crypto', () => ({
 	createHash: jest.fn().mockReturnValue({
 		update: jest.fn().mockReturnValue({
 			digest: jest.fn(),
@@ -39,7 +36,7 @@ jest.mock('crypto', () => ({
 	}),
 }));
 
-jest.mock('path', () => ({
+jest.mock('node:path', () => ({
 	join: jest.fn(),
 	dirname: jest.fn(),
 	resolve: jest.fn(),
@@ -156,15 +153,8 @@ describe('utils -> index', () => {
 
 	describe('parseFileName', () => {
 		it('should slugify the file name', () => {
-			(slugify as unknown as jest.Mock).mockReturnValue('parsed_file');
 			const result = parseFileName('Parsed File.txt');
 			expect(result).toBe('parsed_file');
-			expect(slugify).toHaveBeenCalledWith('Parsed File.txt', {
-				replacement: '_',
-				remove: expect.any(RegExp),
-				lower: true,
-				strict: true,
-			});
 		});
 	});
 

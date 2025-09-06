@@ -2,8 +2,8 @@ import { GenerateKeyPairOptions, GenerateSecretOptions } from '@/types/index.js'
 import { keyPairsToFile, secretToFile } from '@/utils/keys.js';
 import { mnemonic, seed } from '@/utils/index.js';
 
-import * as ed25519 from './keys/ed25519.js';
-import * as aes from './secrets/aes256.js';
+import * as ed25519 from '@/core/keys/ed25519.js';
+import * as aes from '@/core/secrets/aes256.js';
 
 export async function generateKeyPair(
 	algorithm: string,
