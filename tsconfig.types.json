@@ -35,7 +35,11 @@
 	"include": ["./src/**/*"],
 	"exclude": ["./node_modules/**/*", "./dist/**/*", "./test/**/*"],
 	"tsc-alias": {
-		"resolveFullPaths": true,
-		"verbose": true
+		"resolveFullPaths": false,
+		"replacers": {
+			"base-url": {
+				"enabled": false
+			}
+		}
 	}
 }

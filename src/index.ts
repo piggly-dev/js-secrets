@@ -44,10 +44,6 @@ import {
 	hash as hashBcrypt,
 } from '@/core/passwords/bcrypt.js';
 
-export { AbstractKeyManagerService } from '@/core/services/AbstractKeyManagerService.js';
-export { KeyPairManagerService } from '@/core/services/KeyPairManagerService.js';
-export { SecretManagerService } from '@/core/services/SecretManagerService.js';
-
 export const ed25519 = {
 	generateKeyPair: generateKeyPairEd25519,
 	generatePublic: generatePublicEd25519,

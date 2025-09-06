@@ -10,7 +10,7 @@
 		"build": "npm run clean && npm run build:types && npm run build:esm && npm run build:cjs && node fixPackages.cjs",
 		"build:esm": "babel ./src --out-dir ./dist/esm --extensions \".ts\" --config-file ./babel.esm.json",
 		"build:cjs": "babel ./src --out-dir ./dist/cjs --extensions \".ts\" --config-file ./babel.cjs.json",
-		"build:types": "tsc -p tsconfig.types.json && tsc-alias -p tsconfig.types.json && node fixPaths.cjs && node fixTypes.cjs",
+		"build:types": "tsc -p tsconfig.types.json && tsc-alias -p tsconfig.types.json && node fixTypes.cjs",
 		"format": "prettier --write \"./src/**/*.ts\"",
 		"check": "tsc --noEmit -p tsconfig.json",
 		"lint": "eslint --fix ./src/**",
@@ -35,7 +35,7 @@
 				"./dist/types/aes256.d.ts"
 			],
 			"bcrypt": [
-				"./dist/types/bcrypt.d.ts"
+				"./dist/types/bcrypt.hash.d.ts"
 			],
 			"utils": [
 				"./dist/types/utils.d.ts"
@@ -81,14 +81,14 @@
 		},
 		"./bcrypt": {
 			"import": {
-				"types": "./dist/types/bcrypt.d.mts",
-				"default": "./dist/esm/bcrypt.js"
+				"types": "./dist/types/bcrypt;hash.d.mts",
+				"default": "./dist/esm/bcrypt;hash.js"
 			},
 			"require": {
-				"types": "./dist/types/bcrypt.d.cts",
-				"default": "./dist/cjs/bcrypt.js"
+				"types": "./dist/types/bcrypt;hash.d.cts",
+				"default": "./dist/cjs/bcrypt;hash.js"
 			},
-			"types": "./dist/types/bcrypt.d.ts"
+			"types": "./dist/types/bcrypt;hash.d.ts"
 		},
 		"./utils": {
 			"import": {
@@ -103,14 +103,14 @@
 		},
 		"./argon2": {
 			"import": {
-				"types": "./dist/types/argon2.d.mts",
-				"default": "./dist/esm/argon2.js"
+				"types": "./dist/types/argon2.hash.d.mts",
+				"default": "./dist/esm/argon2.hash.js"
 			},
 			"require": {
-				"types": "./dist/types/argon2.d.cts",
-				"default": "./dist/cjs/argon2.js"
+				"types": "./dist/types/argon2.hash.d.cts",
+				"default": "./dist/cjs/argon2.hash.js"
 			},
-			"types": "./dist/types/argon2.d.ts"
+			"types": "./dist/types/argon2.hash.d.ts"
 		}
 	},
 	"bin": {
