@@ -1,17 +1,30 @@
+/* eslint-disable no-console */
 import { Command } from 'commander';
 import chalk from 'chalk';
 
-import { mnemonic, splitWords } from '@/utils';
+import { splitWords, mnemonic } from '@/utils/index.js';
 
+/**
+ * Generate a mnemonic.
+ *
+ * @param program - The program to add the command to.
+ * @returns The program.
+ * @since 1.0.0
+ * @author Caique Araujo <caique@piggly.com.br>
+ */
 export function generateMnemonic(program: Command) {
 	program
 		.command('mnemonic')
 		.description('Generates and show a mnemonic.')
-		.option('-s, --strength <strength>', 'Strength of mnemonic.', '128')
 		.option(
-			'-n, --language <language>',
+			'-s, --strength <strength>',
+			'Strength of mnemonic. Default is 128.',
+			'128',
+		)
+		.option(
+			'-l, --language <language>',
 			'Language of mnemonic. Available: czech, chinese_simplified, chinese_traditional, korean, french, italian, spanish, japanese, portuguese, english.',
-			'english'
+			'english',
 		)
 		.action(options => {
 			console.log(chalk.yellow('Mnemonic'));
@@ -19,11 +32,11 @@ export function generateMnemonic(program: Command) {
 			try {
 				const list = splitWords(
 					mnemonic({
+						language: options.language,
 						strength: options.strength
 							? parseInt(options.strength, 10)
 							: undefined,
-						language: options.language,
-					})
+					}),
 				);
 
 				console.log();

@@ -11,7 +11,7 @@
 		"inlineSourceMap": true,
 		"inlineSources": true,
 		"importHelpers": true,
-		"moduleResolution": "node",
+		"moduleResolution": "bundler",
 		"experimentalDecorators": true,
 		"esModuleInterop": true,
 		"allowSyntheticDefaultImports": true,
@@ -35,7 +35,7 @@
 		"types": ["node"]
 	},
 	"include": ["./src/**/*"],
-	"exclude": ["./node_modules/**/*", "./build/**/*", "./test/**/*"],
+	"exclude": ["./node_modules/**/*", "./dist/**/*", "./test/**/*"],
 	"tsc-alias": {
 		"resolveFullPaths": true
 	}

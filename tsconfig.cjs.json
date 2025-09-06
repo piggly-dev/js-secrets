@@ -1,7 +1,7 @@
 {
 	"compilerOptions": {
 		"target": "esnext",
-		"module": "CommonJS",
+		"module": "nodenext",
 		"strict": true,
 		"declaration": true,
 		"emitDeclarationOnly": true,
@@ -11,7 +11,7 @@
 		"inlineSourceMap": true,
 		"inlineSources": true,
 		"importHelpers": true,
-		"moduleResolution": "node",
+		"moduleResolution": "nodenext",
 		"experimentalDecorators": true,
 		"esModuleInterop": true,
 		"allowSyntheticDefaultImports": true,
@@ -35,7 +35,7 @@
 		"types": ["node"]
 	},
 	"include": ["./src/**/*"],
-	"exclude": ["./node_modules/**/*", "./build/**/*", "./test/**/*"],
+	"exclude": ["./node_modules/**/*", "./dist/**/*", "./test/**/*"],
 	"tsc-alias": {
 		"resolveFullPaths": true
 	}

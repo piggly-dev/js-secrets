@@ -22,6 +22,7 @@ module.exports = {
 			},
 		],
 	},
+	transformIgnorePatterns: ['node_modules/(?!(@noble)/)'],
 	moduleFileExtensions: ['ts', 'js', 'json', 'node'],
 	moduleNameMapper: {
 		'@/(.*)\\.js': '<rootDir>/src/$1',

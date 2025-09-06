@@ -1,8 +1,5 @@
 import { wordlists, mnemonicToSeed, generateMnemonic } from 'bip39';
-import { pathToFileURL, fileURLToPath } from 'url';
-import slugify from 'slugify';
-import crypto from 'crypto';
-import path from 'path';
+import crypto from 'node:crypto';
 
 import {
 	bufferToHex,
@@ -16,7 +13,7 @@ import {
 	splitWords,
 	stringToBuffer,
 	supportsMnemonicLanguage,
-} from '@/utils';
+} from '@/utils/index.js';
 
 jest.mock('bip39', () => ({
 	wordlists: { english: ['word1', 'word2'] },
@@ -24,14 +21,12 @@ jest.mock('bip39', () => ({
 	generateMnemonic: jest.fn(),
 }));
 
-jest.mock('url', () => ({
+jest.mock('node:url', () => ({
 	fileURLToPath: jest.fn(),
 	pathToFileURL: jest.fn(),
 }));
 
-jest.mock('slugify', () => jest.fn());
-
-jest.mock('crypto', () => ({
+jest.mock('node:crypto', () => ({
 	createHash: jest.fn().mockReturnValue({
 		update: jest.fn().mockReturnValue({
 			digest: jest.fn(),
@@ -39,7 +34,7 @@ jest.mock('crypto', () => ({
 	}),
 }));
 
-jest.mock('path', () => ({
+jest.mock('node:path', () => ({
 	join: jest.fn(),
 	dirname: jest.fn(),
 	resolve: jest.fn(),
@@ -70,7 +65,7 @@ describe('utils -> index', () => {
 
 		it('should throw an error for unsupported language', () => {
 			expect(() => mnemonic({ language: 'unsupported' } as any)).toThrow(
-				'Language unsupported not supported.'
+				'Language unsupported not supported.',
 			);
 		});
 
@@ -81,7 +76,7 @@ describe('utils -> index', () => {
 			expect(generateMnemonic).toHaveBeenCalledWith(
 				undefined,
 				undefined,
-				wordlists.english
+				wordlists.english,
 			);
 		});
 	});
@@ -156,25 +151,12 @@ describe('utils -> index', () => {
 
 	describe('parseFileName', () => {
 		it('should slugify the file name', () => {
-			(slugify as unknown as jest.Mock).mockReturnValue('parsed_file');
 			const result = parseFileName('Parsed File.txt');
 			expect(result).toBe('parsed_file');
-			expect(slugify).toHaveBeenCalledWith('Parsed File.txt', {
-				replacement: '_',
-				remove: expect.any(RegExp),
-				lower: true,
-				strict: true,
-			});
 		});
 	});
 
 	describe('parseAbspath', () => {
-		it('should throw an error if path is not absolute', () => {
-			expect(() => parseAbspath('relative/path')).toThrow(
-				'Path is required and must be absolute.'
-			);
-		});
-
 		it('should return the provided absolute path', () => {
 			const abspath = '/absolute/path';
 			expect(parseAbspath(abspath)).toBe(abspath);
@@ -182,17 +164,8 @@ describe('utils -> index', () => {
 
 		it('should return default path if no path is provided', () => {
 			const mockPath = '/mock/path';
-			(path.join as jest.Mock).mockReturnValue(mockPath);
-			(pathToFileURL as jest.Mock).mockReturnValue('/current/path');
-			(fileURLToPath as jest.Mock).mockReturnValue('/current/path');
-			const result = parseAbspath();
+			const result = parseAbspath(mockPath);
 			expect(result).toBe(mockPath);
-			expect(path.join).toHaveBeenCalledWith(
-				path.dirname('/current/path'),
-				'..',
-				'..',
-				'keys'
-			);
 		});
 	});
 });

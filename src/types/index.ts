@@ -1,43 +1,28 @@
-export type AvailableMnemonicLanguage =
-	| 'czech'
-	| 'chinese_simplified'
-	| 'chinese_traditional'
-	| 'korean'
-	| 'french'
-	| 'italian'
-	| 'spanish'
-	| 'japanese'
-	| 'portuguese'
-	| 'english';
-
-export type GenerateMnemonicOptions = Partial<{
-	strength: number;
-	rng: (size: number) => Buffer;
-	language: AvailableMnemonicLanguage;
-}>;
-
-export type GenerateMnemonicSeedOptions = Partial<{
-	password: string;
-}>;
-
-export type AvailableKeyPairAlgorithm = 'ed25519';
-
-export type GenerateKeyPairOptions = Partial<{
-	mnemonic: GenerateMnemonicOptions;
-	seed: GenerateMnemonicSeedOptions;
-}>;
-
 export type AvailableHashingAlgorithm =
-	| 'sha256'
-	| 'sha512'
 	| 'sha3-256'
 	| 'sha3-512'
-	| 'blake2b';
+	| 'blake2b'
+	| 'sha256'
+	| 'sha512';
 
 export type AvailableKDF = 'pbkdf2' | 'bcrypt' | 'scrypt';
 
-export type GenerateSecretOptions = Partial<{
-	seed: GenerateMnemonicSeedOptions;
+export type AvailableKeyPairAlgorithm = 'ed25519';
+
+export type AvailableMnemonicLanguage =
+	| 'chinese_traditional'
+	| 'chinese_simplified'
+	| 'portuguese'
+	| 'japanese'
+	| 'italian'
+	| 'spanish'
+	| 'english'
+	| 'korean'
+	| 'french'
+	| 'czech';
+
+export type GenerateKDFWithBcryptOptions = Partial<{
+	salt_length: number;
 }>;
 
 export type GenerateKDFWithPBKDF2Options = Partial<{
@@ -46,30 +31,51 @@ export type GenerateKDFWithPBKDF2Options = Partial<{
 	salt_length: number;
 }>;
 
-export type GenerateKDFWithBcryptOptions = Partial<{
+export type GenerateKDFWithScryptOptions = Partial<{
+	block_size: number;
+	cost: number;
+	key_length: number;
+	parallelization: number;
 	salt_length: number;
 }>;
 
-export type GenerateKDFWithScryptOptions = Partial<{
-	cost: number;
-	block_size: number;
-	parallelization: number;
-	key_length: number;
-	salt_length: number;
+export type GenerateKeyPairOptions = Partial<{
+	format: 'pem' | 'raw';
+	index_name?: string;
+	mnemonic: GenerateMnemonicOptions;
+	seed: GenerateMnemonicSeedOptions;
+	version?: number;
 }>;
+
+export type GenerateMnemonicOptions = Partial<{
+	language: AvailableMnemonicLanguage;
+	rng: (size: number) => Buffer;
+	strength: number;
+}>;
+
+export type GenerateMnemonicSeedOptions = Partial<{
+	password: string;
+}>;
+
+export type GenerateSecretOptions = Partial<{
+	index_name?: string;
+	recover?: boolean;
+	seed: GenerateMnemonicSeedOptions;
+	version: number;
+}>;
+
+export interface IKeyManagerService<KeyType = Buffer> {
+	get current_version(): number;
+	get(version?: number): KeyType;
+	load(index_name?: string): Promise<true>;
+	get name(): string;
+}
 
 export type VersionedKey = { file: string; name: string; version: number };
 
 export type VersionedKeyPair = {
-	sk: string;
-	pk: string;
 	name: string;
+	pk: string;
+	sk: string;
 	version: number;
 };
-
-export interface IKeyManagerService<KeyType = Buffer> {
-	load(index_name?: string): Promise<true>;
-	get(version?: number): KeyType;
-	get name(): string;
-	get current_version(): number;
-}

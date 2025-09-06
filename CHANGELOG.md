@@ -20,3 +20,7 @@
 ## `v0.5.0` at `2024-06-10`
 
 * Change behavior for Services manager.
+
+## `v0.6.0` at `2025-09-06`
+
+* Overall enhancements to the library.
