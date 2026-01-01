@@ -1,24 +1,25 @@
-import { wordlists, mnemonicToSeed, generateMnemonic } from 'bip39';
 import crypto from 'node:crypto';
 
+import { generateMnemonic, mnemonicToSeed, wordlists } from 'bip39';
+
 import {
-	bufferToHex,
-	bufferToString,
-	cutBuffer,
-	hash,
-	mnemonic,
-	parseAbspath,
-	parseFileName,
-	seed,
-	splitWords,
-	stringToBuffer,
 	supportsMnemonicLanguage,
+	bufferToString,
+	stringToBuffer,
+	parseFileName,
+	parseAbspath,
+	bufferToHex,
+	splitWords,
+	cutBuffer,
+	mnemonic,
+	hash,
+	seed,
 } from '@/utils/index.js';
 
 jest.mock('bip39', () => ({
-	wordlists: { english: ['word1', 'word2'] },
-	mnemonicToSeed: jest.fn(),
 	generateMnemonic: jest.fn(),
+	mnemonicToSeed: jest.fn(),
+	wordlists: { english: ['word1', 'word2'] },
 }));
 
 jest.mock('node:url', () => ({
@@ -35,8 +36,8 @@ jest.mock('node:crypto', () => ({
 }));
 
 jest.mock('node:path', () => ({
-	join: jest.fn(),
 	dirname: jest.fn(),
+	join: jest.fn(),
 	resolve: jest.fn(),
 }));
 

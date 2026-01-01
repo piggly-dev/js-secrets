@@ -2,18 +2,18 @@ import fs from 'node:fs';
 
 import {
 	createPath,
-	exists,
-	readFile,
-	writeFile,
 	removeFile,
+	writeFile,
+	readFile,
+	exists,
 } from '@/utils/file.js';
 
 jest.mock('fs', () => ({
 	existsSync: jest.fn(),
 	mkdirSync: jest.fn(),
 	readFile: jest.fn(),
-	writeFile: jest.fn(),
 	unlink: jest.fn(),
+	writeFile: jest.fn(),
 }));
 
 describe('utils -> file', () => {

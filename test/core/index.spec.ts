@@ -1,15 +1,15 @@
 import {
+	supportsEncryptAlgorithm,
 	supportsKeyAlgorithm,
 	generateKeyPair,
 	recoverKeyPair,
-	supportsEncryptAlgorithm,
 	generateSecret,
 } from '@/core/index.js';
 import { GenerateKeyPairOptions, GenerateSecretOptions } from '@/types/index.js';
 import { keyPairsToFile, secretToFile } from '@/utils/keys.js';
 import * as ed25519 from '@/core/keys/ed25519.js';
-import * as aes from '@/core/secrets/aes256.js';
 import { mnemonic, seed } from '@/utils/index.js';
+import * as aes from '@/core/secrets/aes256.js';
 
 jest.mock('@/utils/keys.js', () => ({
 	keyPairsToFile: jest.fn(),
@@ -37,8 +37,8 @@ describe('core -> index', () => {
 	const mockSeed = Buffer.from('test seed');
 	const mockSecret = Buffer.from('mock secret data');
 	const mockKeys = {
-		sk: Buffer.from('mock secret key data'),
 		pk: Buffer.from('mock public key data'),
+		sk: Buffer.from('mock secret key data'),
 	};
 
 	beforeEach(() => {
@@ -48,17 +48,17 @@ describe('core -> index', () => {
 		(ed25519.generateKeyPair as jest.Mock).mockReturnValue(mockKeys);
 		(aes.generateSecret as jest.Mock).mockReturnValue(mockSecret);
 		(keyPairsToFile as jest.Mock).mockResolvedValue({
-			sk: 'mock/sk/path',
-			pk: 'mock/pk/path',
-			name: mockKeyName,
-			version: mockVersion,
 			index: 'mock/index/path',
+			name: mockKeyName,
+			pk: 'mock/pk/path',
+			sk: 'mock/sk/path',
+			version: mockVersion,
 		});
 		(secretToFile as jest.Mock).mockResolvedValue({
 			file: 'mock/file/path',
+			index: 'mock/index/path',
 			name: mockKeyName,
 			version: mockVersion,
-			index: 'mock/index/path',
 		});
 	});
 
@@ -97,14 +97,14 @@ describe('core -> index', () => {
 				options,
 			);
 			expect(result).toEqual({
-				mnemonic: mockMnemonic,
 				files: {
-					sk: 'mock/sk/path',
-					pk: 'mock/pk/path',
-					name: mockKeyName,
-					version: mockVersion,
 					index: 'mock/index/path',
+					name: mockKeyName,
+					pk: 'mock/pk/path',
+					sk: 'mock/sk/path',
+					version: mockVersion,
 				},
+				mnemonic: mockMnemonic,
 			});
 		});
 
@@ -145,14 +145,14 @@ describe('core -> index', () => {
 				{ ...options, replace: true },
 			);
 			expect(result).toEqual({
-				mnemonic: mockMnemonic,
 				files: {
-					sk: 'mock/sk/path',
-					pk: 'mock/pk/path',
-					name: mockKeyName,
-					version: mockVersion,
 					index: 'mock/index/path',
+					name: mockKeyName,
+					pk: 'mock/pk/path',
+					sk: 'mock/sk/path',
+					version: mockVersion,
 				},
+				mnemonic: mockMnemonic,
 			});
 		});
 
@@ -202,13 +202,13 @@ describe('core -> index', () => {
 				options,
 			);
 			expect(result).toEqual({
-				mnemonic: mockMnemonic,
 				files: {
 					file: 'mock/file/path',
+					index: 'mock/index/path',
 					name: mockKeyName,
 					version: mockVersion,
-					index: 'mock/index/path',
 				},
+				mnemonic: mockMnemonic,
 			});
 		});
 

@@ -1,9 +1,9 @@
 import path from 'node:path';
 
-import { createPath, exists, removeFile, writeFile } from '@/utils/file.js';
-import { readAll, versionExists, write } from '@/utils/indexes.js';
-import { secretToFile, keyPairsToFile } from '@/utils/keys.js';
-import { VersionedKey, VersionedKeyPair } from '@/types/index.js';
+import { createPath, removeFile, writeFile, exists } from '@/utils/file.js';
+import { versionExists, readAll, write } from '@/utils/indexes.js';
+import { VersionedKeyPair, VersionedKey } from '@/types/index.js';
+import { keyPairsToFile, secretToFile } from '@/utils/keys.js';
 
 jest.mock('@/utils/file.js', () => ({
 	createPath: jest.fn(),
@@ -60,8 +60,8 @@ describe('utils -> keys', () => {
 
 			await expect(
 				secretToFile(mockPath, 'testSecret', Buffer.from('secret data'), {
-					version: 1,
 					replace: false,
+					version: 1,
 				}),
 			).rejects.toThrow('Key testSecret already exists.');
 		});
@@ -75,8 +75,8 @@ describe('utils -> keys', () => {
 			existsMock.mockReturnValue(true);
 
 			await secretToFile(mockPath, 'testSecret', secret, {
-				version: 1,
 				replace: true,
+				version: 1,
 			});
 
 			expect(removeFile).toHaveBeenCalledWith(
@@ -100,9 +100,9 @@ describe('utils -> keys', () => {
 			writeMock.mockResolvedValue('/mock/path/textIndex.index.secrets.json');
 
 			const result = await secretToFile(mockPath, 'testSecret', secret, {
-				version: 1,
 				index_name: indexName,
 				replace: false,
+				version: 1,
 			});
 
 			expect(exists).toHaveBeenCalledWith(
@@ -119,9 +119,9 @@ describe('utils -> keys', () => {
 			]);
 			expect(result).toEqual({
 				file: '/mock/path/testSecret.v1.secret.key',
+				index: '/mock/path/textIndex.index.secrets.json',
 				name: 'testSecret',
 				version: 1,
-				index: '/mock/path/textIndex.index.secrets.json',
 			});
 		});
 
@@ -138,8 +138,8 @@ describe('utils -> keys', () => {
 
 			await expect(
 				secretToFile(mockPath, 'testSecret', secret, {
-					version: 1,
 					index_name: indexName,
+					version: 1,
 				}),
 			).rejects.toThrow('Version 1 already exists.');
 		});
@@ -176,8 +176,8 @@ describe('utils -> keys', () => {
 
 			await expect(
 				secretToFile(mockPath, 'testSecret', secret, {
-					version: 1,
 					index_name: indexName,
+					version: 1,
 				}),
 			).rejects.toThrow('Failed to write index file.');
 		});
@@ -188,8 +188,8 @@ describe('utils -> keys', () => {
 			const writeFileMock = writeFile as jest.Mock;
 			const existsMock = exists as jest.Mock;
 			const keys = {
-				sk: Buffer.from('secret key'),
 				pk: Buffer.from('public key'),
+				sk: Buffer.from('secret key'),
 			};
 			writeFileMock.mockResolvedValue('any');
 			existsMock.mockReturnValue(false);
@@ -214,9 +214,9 @@ describe('utils -> keys', () => {
 				keys.pk,
 			);
 			expect(result).toEqual({
-				sk: '/mock/path/testKeyPair.v1.sk.key',
-				pk: '/mock/path/testKeyPair.v1.pk.key',
 				name: 'testKeyPair',
+				pk: '/mock/path/testKeyPair.v1.pk.key',
+				sk: '/mock/path/testKeyPair.v1.sk.key',
 				version: 1,
 			});
 		});
@@ -230,12 +230,12 @@ describe('utils -> keys', () => {
 					mockPath,
 					'testKeyPair',
 					{
-						sk: Buffer.from('secret key'),
 						pk: Buffer.from('public key'),
+						sk: Buffer.from('secret key'),
 					},
 					{
-						version: 1,
 						replace: false,
+						version: 1,
 					},
 				),
 			).rejects.toThrow('Key testKeyPair already exists.');
@@ -245,15 +245,15 @@ describe('utils -> keys', () => {
 			const existsMock = exists as jest.Mock;
 			const writeFileMock = writeFile as jest.Mock;
 			const keys = {
-				sk: Buffer.from('secret key'),
 				pk: Buffer.from('public key'),
+				sk: Buffer.from('secret key'),
 			};
 			writeFileMock.mockResolvedValue('any');
 			existsMock.mockReturnValue(true);
 
 			await keyPairsToFile(mockPath, 'testKeyPair', keys, {
-				version: 1,
 				replace: true,
+				version: 1,
 			});
 
 			expect(removeFile).toHaveBeenCalledWith(
@@ -271,8 +271,8 @@ describe('utils -> keys', () => {
 			const versionExistsMock = versionExists as jest.Mock;
 			const writeMock = write as jest.Mock;
 			const keys = {
-				sk: Buffer.from('secret key'),
 				pk: Buffer.from('public key'),
+				sk: Buffer.from('secret key'),
 			};
 			const indexes: VersionedKeyPair[] = [];
 			writeFileMock.mockResolvedValue('any');
@@ -282,9 +282,9 @@ describe('utils -> keys', () => {
 			writeMock.mockResolvedValue('/mock/path/testKeyPair.keypairs.index.json');
 
 			const result = await keyPairsToFile(mockPath, 'testKeyPair', keys, {
-				version: 1,
 				index_name: indexName,
 				replace: false,
+				version: 1,
 			});
 
 			expect(exists).toHaveBeenCalledWith(
@@ -297,18 +297,18 @@ describe('utils -> keys', () => {
 			expect(versionExists).toHaveBeenCalledWith(indexes, 1);
 			expect(write).toHaveBeenCalledWith('keypairs', mockPath, indexName, [
 				{
-					sk: '/mock/path/testKeyPair.v1.sk.key',
-					pk: '/mock/path/testKeyPair.v1.pk.key',
 					name: 'testKeyPair',
+					pk: '/mock/path/testKeyPair.v1.pk.key',
+					sk: '/mock/path/testKeyPair.v1.sk.key',
 					version: 1,
 				},
 			]);
 			expect(result).toEqual({
-				sk: '/mock/path/testKeyPair.v1.sk.key',
-				pk: '/mock/path/testKeyPair.v1.pk.key',
-				name: 'testKeyPair',
-				version: 1,
 				index: '/mock/path/testKeyPair.keypairs.index.json',
+				name: 'testKeyPair',
+				pk: '/mock/path/testKeyPair.v1.pk.key',
+				sk: '/mock/path/testKeyPair.v1.sk.key',
+				version: 1,
 			});
 		});
 
@@ -317,8 +317,8 @@ describe('utils -> keys', () => {
 			const readAllMock = readAll as jest.Mock;
 			const versionExistsMock = versionExists as jest.Mock;
 			const keys = {
-				sk: Buffer.from('secret key'),
 				pk: Buffer.from('public key'),
+				sk: Buffer.from('secret key'),
 			};
 			const indexes: VersionedKey[] = [];
 
@@ -328,8 +328,8 @@ describe('utils -> keys', () => {
 
 			await expect(
 				keyPairsToFile(mockPath, 'testSecret', keys, {
-					version: 1,
 					index_name: indexName,
+					version: 1,
 				}),
 			).rejects.toThrow('Version 1 already exists.');
 		});
@@ -338,8 +338,8 @@ describe('utils -> keys', () => {
 			const existsMock = exists as jest.Mock;
 			const writeFileMock = writeFile as jest.Mock;
 			const keys = {
-				sk: Buffer.from('secret key'),
 				pk: Buffer.from('public key'),
+				sk: Buffer.from('secret key'),
 			};
 
 			existsMock.mockReturnValue(false);
@@ -359,8 +359,8 @@ describe('utils -> keys', () => {
 			const writeFileMock = writeFile as jest.Mock;
 			const writeMock = write as jest.Mock;
 			const keys = {
-				sk: Buffer.from('secret key'),
 				pk: Buffer.from('public key'),
+				sk: Buffer.from('secret key'),
 			};
 			const indexes: VersionedKey[] = [];
 
@@ -372,8 +372,8 @@ describe('utils -> keys', () => {
 
 			await expect(
 				keyPairsToFile(mockPath, 'testSecret', keys, {
-					version: 1,
 					index_name: indexName,
+					version: 1,
 				}),
 			).rejects.toThrow('Failed to write index file.');
 		});
