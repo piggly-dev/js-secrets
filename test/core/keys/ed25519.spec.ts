@@ -2,9 +2,9 @@ import {
 	generateKeyPair,
 	generateSecret,
 	generatePublic,
-	sign,
-	verify,
 	signFromString,
+	verify,
+	sign,
 } from '@/core/keys/ed25519.js';
 
 describe('core -> keys -> ed25519', () => {

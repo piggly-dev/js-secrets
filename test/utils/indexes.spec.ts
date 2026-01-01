@@ -1,7 +1,7 @@
 import path from 'node:path';
 
-import { write, readAll, readKey, remove, versionExists } from '@/utils/indexes.js';
-import { readFile, writeFile } from '@/utils/file.js';
+import { versionExists, readAll, readKey, remove, write } from '@/utils/indexes.js';
+import { writeFile, readFile } from '@/utils/file.js';
 import { VersionedKey } from '@/types/index.js';
 
 jest.mock('@/utils/file.js', () => ({
@@ -63,7 +63,7 @@ describe('Index Functions', () => {
 		it('should read a specific key by version', async () => {
 			const readFileMock = readFile as jest.Mock;
 			const indexes: VersionedKey[] = [
-				{ version: 1, file: 'file', name: 'name' },
+				{ file: 'file', name: 'name', version: 1 },
 			];
 			readFileMock.mockResolvedValueOnce(JSON.stringify(indexes));
 
@@ -80,7 +80,7 @@ describe('Index Functions', () => {
 		it('should throw an error if the version is not found', async () => {
 			const readFileMock = readFile as jest.Mock;
 			const indexes: VersionedKey[] = [
-				{ version: 1, file: 'file', name: 'name' },
+				{ file: 'file', name: 'name', version: 1 },
 			];
 			readFileMock.mockResolvedValueOnce(JSON.stringify(indexes));
 
@@ -95,7 +95,7 @@ describe('Index Functions', () => {
 			const readFileMock = readFile as jest.Mock;
 			const writeFileMock = writeFile as jest.Mock;
 			const indexes: VersionedKey[] = [
-				{ version: 1, file: 'file', name: 'name' },
+				{ file: 'file', name: 'name', version: 1 },
 			];
 			readFileMock.mockResolvedValueOnce(JSON.stringify(indexes));
 
@@ -110,7 +110,7 @@ describe('Index Functions', () => {
 		it('should throw an error if the version is not found', async () => {
 			const readFileMock = readFile as jest.Mock;
 			const indexes: VersionedKey[] = [
-				{ version: 1, file: 'file', name: 'name' },
+				{ file: 'file', name: 'name', version: 1 },
 			];
 			readFileMock.mockResolvedValueOnce(JSON.stringify(indexes));
 
@@ -123,7 +123,7 @@ describe('Index Functions', () => {
 	describe('versionExists', () => {
 		it('should return true if the version exists', () => {
 			const indexes: VersionedKey[] = [
-				{ version: 1, file: 'file', name: 'name' },
+				{ file: 'file', name: 'name', version: 1 },
 			];
 
 			const result = versionExists(indexes, 1);
@@ -133,7 +133,7 @@ describe('Index Functions', () => {
 
 		it('should return false if the version does not exist', () => {
 			const indexes: VersionedKey[] = [
-				{ version: 1, file: 'file', name: 'name' },
+				{ file: 'file', name: 'name', version: 1 },
 			];
 
 			const result = versionExists(indexes, 2);

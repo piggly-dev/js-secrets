@@ -24,3 +24,7 @@
 ## `v0.6.0` at `2025-09-06`
 
 * Overall enhancements to the library.
+
+## `v0.7.0` at `2026-01-01`
+
+* Dependencies udpated.

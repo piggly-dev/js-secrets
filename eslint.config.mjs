@@ -94,19 +94,24 @@ export default [
 					ignoreCase: true,
 					specialCharacters: 'keep',
 					groups: [
-						'type',
-						'builtin',
-						'external',
-						'internal-type',
-						'internal',
-						['parent-type', 'sibling-type', 'index-type'],
-						['parent', 'sibling', 'index'],
+						['builtin', 'value-builtin'],
+						['external', 'value-external'],
+						['type-external', 'type-import'],
+						['type-internal', 'type-parent', 'type-sibling', 'type-index'],
+						['value-internal', 'internal'],
+						[
+							'value-parent',
+							'value-sibling',
+							'value-index',
+							'parent',
+							'sibling',
+							'index',
+						],
 						'side-effect',
 						'style',
-						'object',
 						'unknown',
 					],
-					newlinesBetween: 'always',
+					newlinesBetween: 1,
 					internalPattern: ['^@/'],
 					environment: 'node',
 				},
@@ -147,22 +152,23 @@ export default [
 					partitionByComment: true,
 					partitionByNewLine: true,
 					groups: ['ids', 'top', 'unknown', 'bottom'],
-					customGroups: {
-						ids: ['_id', 'id'],
-						top: ['^_(_.*_at)$'],
-						bottom: ['^_.*_at', '^.*_at'],
-					},
-				},
-			],
-			'perfectionist/sort-interfaces': [
-				'error',
-				{
-					type: 'alphabetical',
-					order: 'asc',
-					ignoreCase: true,
-					specialCharacters: 'keep',
-					partitionByComment: true,
-					partitionByNewLine: true,
+					customGroups: [
+						{
+							groupName: 'ids',
+							selector: 'property',
+							elementNamePattern: ['_id', 'id'],
+						},
+						{
+							groupName: 'top',
+							selector: 'property',
+							elementNamePattern: ['^_.*_at'],
+						},
+						{
+							groupName: 'bottom',
+							selector: 'property',
+							elementNamePattern: ['^_.*_at', '^.*_at'],
+						},
+					],
 				},
 			],
 			'perfectionist/sort-objects': [
@@ -175,13 +181,35 @@ export default [
 					partitionByComment: true,
 					partitionByNewLine: true,
 					styledComponents: true,
-					ignorePattern: [],
 					groups: ['ids', 'top', 'unknown', 'bottom'],
-					customGroups: {
-						ids: ['_id', 'id'],
-						top: ['^_(_.*_at)$'],
-						bottom: ['^_.*_at', '^.*_at'],
-					},
+					customGroups: [
+						{
+							groupName: 'ids',
+							selector: 'property',
+							elementNamePattern: ['_id', 'id'],
+						},
+						{
+							groupName: 'top',
+							selector: 'property',
+							elementNamePattern: ['^_.*_at'],
+						},
+						{
+							groupName: 'bottom',
+							selector: 'property',
+							elementNamePattern: ['^_.*_at', '^.*_at'],
+						},
+					],
+				},
+			],
+			'perfectionist/sort-intersection-types': [
+				'error',
+				{
+					type: 'alphabetical',
+					order: 'asc',
+					ignoreCase: true,
+					specialCharacters: 'keep',
+					partitionByComment: true,
+					partitionByNewLine: true,
 				},
 			],
 			'perfectionist/sort-modules': [
@@ -202,10 +230,9 @@ export default [
 					ignoreCase: true,
 					specialCharacters: 'keep',
 					partitionByComment: true,
-					partitionByNewLine: true,
 				},
 			],
-			'perfectionist/sort-intersection-types': [
+			'perfectionist/sort-interfaces': [
 				'error',
 				{
 					type: 'alphabetical',
