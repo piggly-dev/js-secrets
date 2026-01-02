@@ -9,17 +9,7 @@ export type AvailableKDF = 'pbkdf2' | 'bcrypt' | 'scrypt';
 
 export type AvailableKeyPairAlgorithm = 'ed25519';
 
-export type AvailableMnemonicLanguage =
-	| 'chinese_traditional'
-	| 'chinese_simplified'
-	| 'portuguese'
-	| 'japanese'
-	| 'italian'
-	| 'spanish'
-	| 'english'
-	| 'korean'
-	| 'french'
-	| 'czech';
+export type AvailableMnemonicLanguage = 'english';
 
 export type GenerateKDFWithBcryptOptions = Partial<{
 	salt_length: number;
@@ -49,7 +39,6 @@ export type GenerateKeyPairOptions = Partial<{
 
 export type GenerateMnemonicOptions = Partial<{
 	language: AvailableMnemonicLanguage;
-	rng: (size: number) => Buffer;
 	strength: number;
 }>;
 

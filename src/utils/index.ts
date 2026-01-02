@@ -1,7 +1,8 @@
 import crypto from 'node:crypto';
 import path from 'node:path';
 
-import { generateMnemonic, mnemonicToSeed, wordlists } from 'bip39';
+import { generateMnemonic, mnemonicToSeed } from '@scure/bip39';
+import { wordlist } from '@scure/bip39/wordlists/english.js';
 
 import {
 	GenerateMnemonicSeedOptions,
@@ -67,17 +68,17 @@ export function hash(algorithm: string, message: string): Buffer {
  * @author Caique Araujo <caique@piggly.com.br>
  */
 export function mnemonic(options: GenerateMnemonicOptions = {}): string {
-	let wordslist: Array<string> | undefined;
-
-	if (options.language) {
-		if (supportsMnemonicLanguage(options.language) === false) {
-			throw Error(`Language ${options.language} not supported.`);
-		}
-
-		wordslist = wordlists[options.language];
+	if (options.language && options.language !== 'english') {
+		throw Error(
+			`Language ${options.language} not supported. Only english is available.`,
+		);
 	}
 
-	return generateMnemonic(options.strength, options.rng, wordslist);
+	if (options.strength && (options.strength < 128 || options.strength > 256)) {
+		throw Error('Strength must be between 128 and 256.');
+	}
+
+	return generateMnemonic(wordlist, options.strength);
 }
 
 /**
@@ -134,7 +135,8 @@ export async function seed(
 	mnemonic: string,
 	options: GenerateMnemonicSeedOptions = {},
 ): Promise<Buffer> {
-	return mnemonicToSeed(mnemonic, options.password);
+	const seedBytes = await mnemonicToSeed(mnemonic, options.password);
+	return Buffer.from(seedBytes);
 }
 
 /**
@@ -179,5 +181,5 @@ export function stringToBuffer(message: string) {
  * @author Caique Araujo <caique@piggly.com.br>
  */
 export function supportsMnemonicLanguage(language: string): boolean {
-	return Object.keys(wordlists).includes(language);
+	return language === 'english';
 }
