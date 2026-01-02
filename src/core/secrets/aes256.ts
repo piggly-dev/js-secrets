@@ -1,6 +1,9 @@
 import { TransformCallback, Transform } from 'node:stream';
 import crypto from 'node:crypto';
 
+import { sha256 } from '@noble/hashes/sha2.js';
+import { hkdf } from '@noble/hashes/hkdf.js';
+
 /**
  * Derive an encryption key from a secret and keys.
  *
@@ -579,9 +582,15 @@ export function decryptCTRStream(
  * @since 0.1.0
  * @author Caique Araujo <caique@piggly.com.br>
  */
-export function generateSecret(seed?: Buffer): Buffer {
-	return crypto
-		.createHash('sha256')
-		.update(seed ?? crypto.randomBytes(32))
-		.digest();
+export function generateSecret(
+	seed?: Buffer,
+	opts?: Partial<{ length: number; salt: Buffer }>,
+): Buffer {
+	const length = opts?.length ?? 32;
+	const salt = opts?.salt ?? Buffer.alloc(0);
+	const ikm = seed ?? crypto.randomBytes(32);
+
+	return Buffer.from(
+		hkdf(sha256, ikm, salt, Buffer.from('aes-256-secret/v1'), length),
+	);
 }
