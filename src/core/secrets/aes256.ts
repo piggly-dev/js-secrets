@@ -1,6 +1,9 @@
 import { TransformCallback, Transform } from 'node:stream';
 import crypto from 'node:crypto';
 
+import { sha256 } from '@noble/hashes/sha2.js';
+import { hkdf } from '@noble/hashes/hkdf.js';
+
 /**
  * Derive an encryption key from a secret and keys.
  *
@@ -573,15 +576,32 @@ export function decryptCTRStream(
 
 /**
  * Generate a secret FROM a seed WITH SHA-256.
+ * Now it uses HKDF. To keep support to previous version use `version: 1`.
  *
- * @param seed
+ * @warning Old secrets (<=0.7.x versions) should use the `version: 1` option.
+ * @param seed - The seed to generate the secret from.
+ * @param opts - The options to generate the secret.
+ * @param opts.length - The length of the secret.
+ * @param opts.salt - The salt to use.
+ * @param opts.version - The version of the secret. Set to `1` to generate a secret compatible with previous versions (<=0.7.x).
  * @returns The secret.
  * @since 0.1.0
  * @author Caique Araujo <caique@piggly.com.br>
  */
-export function generateSecret(seed?: Buffer): Buffer {
-	return crypto
-		.createHash('sha256')
-		.update(seed ?? crypto.randomBytes(32))
-		.digest();
+export function generateSecret(
+	seed?: Buffer,
+	opts?: Partial<{ length: number; salt: Buffer; version: 1 | 2 }>,
+): Buffer {
+	const length = opts?.length ?? 32;
+	const salt = opts?.salt ?? Buffer.alloc(0);
+	const ikm = seed ?? crypto.randomBytes(32);
+	const version = opts?.version ?? 2;
+
+	if (version === 1) {
+		return crypto.createHash('sha256').update(ikm).digest();
+	}
+
+	return Buffer.from(
+		hkdf(sha256, ikm, salt, Buffer.from('aes-256-secret/v1'), length),
+	);
 }

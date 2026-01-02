@@ -4,6 +4,10 @@
 
 An ESM/CommonJS library for managing secrets in your application. The main goal of this library is to provide terminal commands (with npx) to **generate secrets for your application from a mnemonic phrase**. To achieve it, a lot of tools are used within micro functions.
 
+## 🚨 Breaking changes
+
+- Starting with v0.8.0, all deterministic secrets generated with `aes256.generateSecret` are now different from the previous version. You should use the "version: 1" flag to keep compatibility.
+
 ## Features
 
 - Generates a mnemonic phrase on terminal, with `npx pglysecrets mnemonic`;
@@ -183,6 +187,7 @@ pglysecrets recover:aes256 mySecret 1 -p /path/to/save -x secretIndex -m "mnemon
 ```
 
 ## Installation
+
 This library is ready for ES module or CommonJs module. You must add it by using Node.Js:
 
 ```bash

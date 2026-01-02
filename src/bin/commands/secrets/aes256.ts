@@ -27,7 +27,7 @@ export function generateAES256SecretCommand(program: Command) {
 		.option('-w, --password <password>', 'Password for seed generation.')
 		.option(
 			'-l, --language <language>',
-			'Language of mnemonic. Available: czech, chinese_simplified, chinese_traditional, korean, french, italian, spanish, japanese, portuguese, english. Default is english.',
+			'Language of mnemonic. Only english is available.',
 			'english',
 		)
 		.option(

@@ -1,6 +1,6 @@
 import crypto from 'node:crypto';
 
-import { generateMnemonic, mnemonicToSeed, wordlists } from 'bip39';
+import { generateMnemonic, mnemonicToSeed } from '@scure/bip39';
 
 import {
 	supportsMnemonicLanguage,
@@ -16,10 +16,9 @@ import {
 	seed,
 } from '@/utils/index.js';
 
-jest.mock('bip39', () => ({
+jest.mock('@scure/bip39', () => ({
 	generateMnemonic: jest.fn(),
 	mnemonicToSeed: jest.fn(),
-	wordlists: { english: ['word1', 'word2'] },
 }));
 
 jest.mock('node:url', () => ({
@@ -66,7 +65,7 @@ describe('utils -> index', () => {
 
 		it('should throw an error for unsupported language', () => {
 			expect(() => mnemonic({ language: 'unsupported' } as any)).toThrow(
-				'Language unsupported not supported.',
+				'Language unsupported not supported. Only english is available.',
 			);
 		});
 
@@ -74,20 +73,16 @@ describe('utils -> index', () => {
 			(generateMnemonic as jest.Mock).mockReturnValue('mnemonic');
 			const result = mnemonic({ language: 'english' });
 			expect(result).toBe('mnemonic');
-			expect(generateMnemonic).toHaveBeenCalledWith(
-				undefined,
-				undefined,
-				wordlists.english,
-			);
+			expect(generateMnemonic).toHaveBeenCalled();
 		});
 	});
 
 	describe('seed', () => {
 		it('should generate seed from mnemonic', async () => {
-			const mockSeed = Buffer.from('seed');
-			(mnemonicToSeed as jest.Mock).mockImplementation(() => mockSeed);
+			const mockSeedBytes = new Uint8Array([115, 101, 101, 100]); // 'seed' as bytes
+			(mnemonicToSeed as jest.Mock).mockResolvedValue(mockSeedBytes);
 			const result = await seed('mnemonic');
-			expect(result).toBe(mockSeed);
+			expect(result).toEqual(Buffer.from(mockSeedBytes));
 			expect(mnemonicToSeed).toHaveBeenCalledWith('mnemonic', undefined);
 		});
 	});

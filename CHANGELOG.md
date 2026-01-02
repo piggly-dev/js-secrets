@@ -28,3 +28,11 @@
 ## `v0.7.0` at `2026-01-01`
 
 * Dependencies udpated.
+
+## `v0.8.0` at `2026-01-02`
+
+* Dependencies udpated.
+* Migrate from `bip39` to `@scure/bip39`;
+* Using `hkdf` from `@noble/hashes` when generating secrets.
+
+> **Note:** Starting with v0.8.0, all deterministic secrets generated with `aes256.generateSecret` are now different from the previous version. You should use the "version: 1" flag to keep compatibility.

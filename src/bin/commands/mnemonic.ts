@@ -23,7 +23,7 @@ export function generateMnemonic(program: Command) {
 		)
 		.option(
 			'-l, --language <language>',
-			'Language of mnemonic. Available: czech, chinese_simplified, chinese_traditional, korean, french, italian, spanish, japanese, portuguese, english.',
+			'Language of mnemonic. Only english is available.',
 			'english',
 		)
 		.action(options => {
