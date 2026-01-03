@@ -36,3 +36,8 @@
 * Using `hkdf` from `@noble/hashes` when generating secrets.
 
 > **Note:** Starting with v0.8.0, all deterministic secrets generated with `aes256.generateSecret` are now different from the previous version. You should use the "version: 1" flag to keep compatibility.
+
+## `v0.8.1` at `2026-01-03`
+
+* Dependencies udpated.
+* Add `generate:secret` command to generate a secret from a mnemonic phrase.
