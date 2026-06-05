@@ -2,42 +2,47 @@
 
 ## `v0.1.0` at `2024-06-10`
 
-* Initial release.
+- Initial release.
 
 ## `v0.2.0` at `2024-06-10`
 
-* Add current version flag to `SecretManagerService` and `KeyPairManagerService`;
-* Types exports.
+- Add current version flag to `SecretManagerService` and `KeyPairManagerService`;
+- Types exports.
 
 ## `v0.3.0` at `2024-06-10`
 
-* Add sourceMap to build.
+- Add sourceMap to build.
 
 ## `v0.4.0` at `2024-06-10`
 
-* Add `.js` extension to `.d.ts` files.
+- Add `.js` extension to `.d.ts` files.
 
 ## `v0.5.0` at `2024-06-10`
 
-* Change behavior for Services manager.
+- Change behavior for Services manager.
 
 ## `v0.6.0` at `2025-09-06`
 
-* Overall enhancements to the library.
+- Overall enhancements to the library.
 
 ## `v0.7.0` at `2026-01-01`
 
-* Dependencies udpated.
+- Dependencies udpated.
 
 ## `v0.8.0` at `2026-01-02`
 
-* Dependencies udpated.
-* Migrate from `bip39` to `@scure/bip39`;
-* Using `hkdf` from `@noble/hashes` when generating secrets.
+- Dependencies udpated.
+- Migrate from `bip39` to `@scure/bip39`;
+- Using `hkdf` from `@noble/hashes` when generating secrets.
 
 > **Note:** Starting with v0.8.0, all deterministic secrets generated with `aes256.generateSecret` are now different from the previous version. You should use the "version: 1" flag to keep compatibility.
 
 ## `v0.8.1` at `2026-01-03`
 
-* Dependencies udpated.
-* Add `generate:secret` command to generate a secret from a mnemonic phrase.
+- Dependencies udpated.
+- Add `generate:secret` command to generate a secret from a mnemonic phrase.
+  ility.
+
+## `v0.9.0` at `2026-06-04`
+
+- Dependencies udpated.
