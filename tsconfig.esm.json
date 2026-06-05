@@ -18,11 +18,10 @@
 		"sourceMap": true,
 		"allowJs": false,
 		"resolveJsonModule": true,
-		"baseUrl": ".",
 		"rootDir": "./src",
 		"outDir": "./dist/esm",
 		"paths": {
-			"@/*": ["src/*"]
+			"@/*": ["./src/*"]
 		},
 		"plugins": [
 			{
